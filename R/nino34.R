@@ -1,0 +1,8 @@
+#' Monthly Niño 3.4 Index.
+#'
+#' Monthly Niño 3.4 sea surface temperature (SST) Index time series.
+#'
+#' @format A time series of length 936.
+#' @source \url{https://psl.noaa.gov/gcos_wgsp/Timeseries/Nino34/}
+#' @references Rayner N. A., D. E. Parker, E. B. Horton, C. K. Folland, L. V. Alexander, D. P. Rowell, E. C. Kent, A. Kaplan. \emph{Global analyses of sea surface temperature, sea ice, and night marine air temperature since the late nineteenth century}. J. Geophys. Res., 108 (D14), 4407 (2003). \doi{10.1029/2002JD002670}
+"nino34"

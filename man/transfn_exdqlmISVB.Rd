@@ -94,6 +94,7 @@ A list of the following is returned:
 \item \code{samp.vts} - Posterior sample of latent parameters, v_t, variational distributions.
 \item \code{theta.out} - List containing the variational distribution of the state vector including filtered distribution parameters (\code{fm} and \code{fC}) and smoothed distribution parameters (\code{sm} and \code{sC}).
 \item \code{vts.out} - List containing the variational distributions of latent parameters v_t.
+\item \code{median.kt} - Median number of time steps until the effect of X_t is less than or equal to 1e-3.
 }
 If \code{dqlm.ind=FALSE}, the list also contains:
 \itemize{

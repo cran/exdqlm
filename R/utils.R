@@ -192,18 +192,18 @@ check_logics = function(gam.init,sig.init,fix.gamma,fix.sigma,dqlm.ind){
   retval$gam.init = gam.init
   retval$fix.gamma = fix.gamma
   retval$dqlm.ind = dqlm.ind
-  if(fix.gamma & is.na(gam.init)){ stop("when fix.gamma = TRUE, gam.init must be specified") }
-  if(fix.sigma & is.na(sig.init)){ stop("when fix.sigma = TRUE, sig.init must be specified") }
   if(dqlm.ind){
     if(gam.init!=0 | !fix.gamma){
-      retval$gam.init = 0
-      retval$fix.gamma = TRUE
-      }
+      retval$gam.init <- gam.init <- 0
+      retval$fix.gamma <- fix.gamma <- TRUE
+    }
   }else{
     if(gam.init==0 && fix.gamma==TRUE){
       retval$dqlm.ind = TRUE
-      }
+    }
   }
+  if(fix.gamma & is.na(gam.init)){ stop("when fix.gamma = TRUE, gam.init must be specified") }
+  if(fix.sigma & is.na(sig.init)){ stop("when fix.sigma = TRUE, sig.init must be specified") }
   return(retval)
 }
 #

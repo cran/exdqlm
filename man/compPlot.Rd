@@ -4,7 +4,15 @@
 \alias{compPlot}
 \title{Plot a component of an exDQLM}
 \usage{
-compPlot(y, m1, index, add = FALSE, col = "purple", just.theta = FALSE)
+compPlot(
+  y,
+  m1,
+  index,
+  add = FALSE,
+  col = "purple",
+  just.theta = FALSE,
+  cr.percent = 0.95
+)
 }
 \arguments{
 \item{y}{A univariate time-series.}
@@ -18,6 +26,8 @@ compPlot(y, m1, index, add = FALSE, col = "purple", just.theta = FALSE)
 \item{col}{Color of dynamic component to be plotted. Default is \code{purple}.}
 
 \item{just.theta}{If \code{TRUE}, the function plots the dynamic distribution of the \code{index} element of the state vector. If \code{just.theta=TRUE}, \code{index} must have length 1.}
+
+\item{cr.percent}{Percentage used in the calculation of the credible intervals.}
 }
 \value{
 A list of the following is returned:

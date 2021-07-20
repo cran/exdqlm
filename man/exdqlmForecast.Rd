@@ -13,7 +13,8 @@ exdqlmForecast(
   fGG = NULL,
   plot = TRUE,
   add = FALSE,
-  cols = c("purple", "magenta")
+  cols = c("purple", "magenta"),
+  cr.percent = 0.95
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ exdqlmForecast(
 \item{add}{If \code{TRUE}, the forecasted quantile will be added to the existing plot. Default is \code{FALSE}.}
 
 \item{cols}{Two colors used to plot filtered and forecasted quantile estimates respectively. Default is \code{c("purple","magenta")}.}
+
+\item{cr.percent}{Percentage used in the calculation of the credible intervals.}
 }
 \value{
 A list containing the following is returned:

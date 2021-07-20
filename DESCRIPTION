@@ -1,6 +1,6 @@
 Package: exdqlm
 Title: Extended Dynamic Quantile Linear Models
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: 
     c(person(given = "Raquel",
            family = "Barata",
@@ -26,6 +26,6 @@ Imports: stats, methods, graphics, dlm, coda, tictoc, magic, crch,
         truncnorm, HyperbolicDist, GeneralizedHyperbolic, brms, FNN,
         LaplacesDemon, grDevices
 NeedsCompilation: no
-Packaged: 2021-06-17 14:37:53 UTC; Ronnee
+Packaged: 2021-07-19 15:05:51 UTC; Ronnee
 Repository: CRAN
-Date/Publication: 2021-06-18 08:10:04 UTC
+Date/Publication: 2021-07-20 08:20:02 UTC

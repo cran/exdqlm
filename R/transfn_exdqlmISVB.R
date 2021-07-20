@@ -28,6 +28,7 @@
 #'   \item `samp.vts` - Posterior sample of latent parameters, v_t, variational distributions.
 #'   \item `theta.out` - List containing the variational distribution of the state vector including filtered distribution parameters (`fm` and `fC`) and smoothed distribution parameters (`sm` and `sC`).
 #'   \item `vts.out` - List containing the variational distributions of latent parameters v_t.
+#'   \item `median.kt` - Median number of time steps until the effect of X_t is less than or equal to 1e-3.
 #' }
 #' If `dqlm.ind=FALSE`, the list also contains:
 #' \itemize{
@@ -81,6 +82,7 @@ transfn_exdqlmISVB<-function(y,p0,model,X,df,dim.df,lam,tf.df,fix.gamma=FALSE,ga
 
   # initialize quantile
   if(methods::hasArg(exps0)){
+    TT = length(y)
     if(length(exps0) != TT){stop("exp0 must have same length as y")}
   }else{
     TT = length(y)
@@ -121,6 +123,9 @@ transfn_exdqlmISVB<-function(y,p0,model,X,df,dim.df,lam,tf.df,fix.gamma=FALSE,ga
   tf.return = exdqlmISVB(y,p0,tf.model,tf.model.df,tf.model.dim.df,fix.gamma,gam.init,fix.sigma,sig.init,dqlm.ind,
                          exps0,tol,n.IS,n.samp,PriorSigma,PriorGamma,verbose)
   tf.return$lam = lam
+
+  k_seq = (log(1e-3)-log(abs(c(tf.model$m0[1],tf.return$theta.out$sm[(dim(tf.return$theta.out$sm)[1]-1),-TT])*c(X))))/(log(lam))
+  tf.return$median.kt = stats::median(k_seq)
 
   # return results
   return(tf.return)

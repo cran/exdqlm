@@ -7,6 +7,7 @@
 #' @param add If `TRUE`, the dynamic component will be added to existing plot.
 #' @param col Color of dynamic component to be plotted. Default is `purple`.
 #' @param just.theta If `TRUE`, the function plots the dynamic distribution of the `index` element of the state vector. If `just.theta=TRUE`, `index` must have length 1.
+#' @param cr.percent Percentage used in the calculation of the credible intervals.
 #'
 #' @return A list of the following is returned:
 #'  \itemize{
@@ -28,7 +29,7 @@
 #' compPlot(y,M0,index=c(3,4),col="blue")
 #' }
 #'
-compPlot <- function(y, m1, index, add = FALSE, col="purple", just.theta = FALSE){
+compPlot <- function(y, m1, index, add = FALSE, col="purple", just.theta = FALSE, cr.percent = 0.95){
 
   # check inputs
   check_ts(y)
@@ -44,20 +45,24 @@ compPlot <- function(y, m1, index, add = FALSE, col="purple", just.theta = FALSE
   if(just.theta & p != 1){
     stop("when 'just.theta = TRUE', 'index' should have length 1")
   }
+  if(cr.percent<=0 | cr.percent>=1){
+    stop("cr.percent must be between 0 and 1")
+  }
+  half.alpha = (1 - cr.percent)/2
 
   # 95% CrIs
   if(!just.theta){
-    quant.samps = apply(array(m1$model$FF[index,],c(p,TT,n.samp))*array(m1$samp.theta[index,,],c(p,TT,n.samp)),c(2,3),sum)
+      quant.samps = apply(array(m1$model$FF[index,],c(p,TT,n.samp))*array(m1$samp.theta[index,,],c(p,TT,n.samp)),c(2,3),sum)
   }else{
-    quant.samps = matrix(m1$samp.theta[index,,],TT,n.samp)
+      quant.samps = matrix(m1$samp.theta[index,,],TT,n.samp)
   }
   map.quant = rowMeans(quant.samps)
-  lb.quant = apply(quant.samps,1,stats::quantile,probs=0.025)
-  ub.quant = apply(quant.samps,1,stats::quantile,probs=0.975)
+  lb.quant = apply(quant.samps,1,stats::quantile,probs=half.alpha)
+  ub.quant = apply(quant.samps,1,stats::quantile,probs=cr.percent + half.alpha)
 
   # plot
   if(!add){
-    stats::plot.ts(y,xlab="time",ylab="quantile 95% CrIs",ylim=range(c(lb.quant,ub.quant)),col="white")
+    stats::plot.ts(y,xlab="time",ylab=sprintf("%s%% CrIs",100*cr.percent),ylim=range(c(lb.quant,ub.quant)),col="white")
   }
   ts.xy = grDevices::xy.coords(y)
   graphics::lines(ts.xy$x,map.quant,col=col,lwd=1.5)

@@ -68,6 +68,11 @@ exdqlmMCMC <- function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigm
 
   ### Define L and U
   L = L.fn(p0); U = U.fn(p0)
+  if(!is.na(gam.init)){
+    if(gam.init < L | gam.init > U){
+      stop(sprintf("gam.init must be between %s and %s for %s quantile",round(L,3),round(U,3),p0))
+    }
+  }
 
   ### sigma and gamma priors
   # sigma ~ IG(a_sig,b_sig)

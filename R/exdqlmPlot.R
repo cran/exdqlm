@@ -6,6 +6,7 @@
 #' @param m1 An object of class "`exdqlm`".
 #' @param add If `TRUE`, the dynamic quantile will be added to existing plot.
 #' @param col Color of dynamic quantile to be plotted. Default is `purple`.
+#' @param cr.percent Percentage used in the calculation of the credible intervals.
 #'
 #' @return A list of the following is returned:
 #'  \itemize{
@@ -24,7 +25,7 @@
 #' exdqlmPlot(y,M0,col="blue")
 #' }
 #'
-exdqlmPlot <- function(y,m1,add=FALSE,col="purple"){
+exdqlmPlot <- function(y,m1,add=FALSE,col="purple",cr.percent=0.95){
 
   # check inputs
   check_ts(y)
@@ -37,16 +38,20 @@ exdqlmPlot <- function(y,m1,add=FALSE,col="purple"){
     }
   p = dim(m1$samp.theta)[1]
   n.samp = dim(m1$samp.theta)[3]
+  if(cr.percent<=0 | cr.percent>=1){
+    stop("cr.percent must be between 0 and 1")
+  }
+  half.alpha = (1 - cr.percent)/2
 
   # 95% CrIs
   quant.samps = apply(array(m1$model$FF,c(p,TT,n.samp))*m1$samp.theta,c(2,3),sum)
   map.quant = rowMeans(quant.samps)
-  lb.quant = apply(quant.samps,1,stats::quantile,probs=0.025)
-  ub.quant = apply(quant.samps,1,stats::quantile,probs=0.975)
+  lb.quant = apply(quant.samps,1,stats::quantile,probs=half.alpha)
+  ub.quant = apply(quant.samps,1,stats::quantile,probs=cr.percent + half.alpha)
 
   # plot
   if(!add){
-    stats::plot.ts(y,xlab="time",ylab="quantile 95% CrIs",ylim=range(c(y,lb.quant,ub.quant)),col="dark grey")
+    stats::plot.ts(y,xlab="time",ylab=sprintf("quantile %s%% CrIs",100*cr.percent),ylim=range(c(y,lb.quant,ub.quant)),col="dark grey")
   }
   ts.xy = grDevices::xy.coords(y)
   graphics::lines(ts.xy$x,map.quant,col=col,lwd=1.5)

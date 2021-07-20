@@ -11,6 +11,7 @@
 #' @param plot If `TRUE` the forecasted quantile estimates and 95% credible intervals are plotted, along with the filtered quantile estimates and 95% credible intervals for reference. Default is `TRUE`.
 #' @param add If `TRUE`, the forecasted quantile will be added to the existing plot. Default is `FALSE`.
 #' @param cols Two colors used to plot filtered and forecasted quantile estimates respectively. Default is `c("purple","magenta")`.
+#' @param cr.percent Percentage used in the calculation of the credible intervals.
 #'
 #' @return A list containing the following is returned:
 #'  \itemize{
@@ -30,7 +31,7 @@
 #' exdqlmForecast(y,start.t=90,k=10,M0)
 #' }
 #'
-exdqlmForecast = function(y,start.t,k,m1,fFF=NULL,fGG=NULL,plot=TRUE,add=FALSE,cols=c("purple","magenta")){
+exdqlmForecast = function(y,start.t,k,m1,fFF=NULL,fGG=NULL,plot=TRUE,add=FALSE,cols=c("purple","magenta"),cr.percent=0.95){
 
   # check inputs
   check_ts(y)
@@ -39,6 +40,10 @@ exdqlmForecast = function(y,start.t,k,m1,fFF=NULL,fGG=NULL,plot=TRUE,add=FALSE,c
   if(class(m1) != c("exdqlm")){
     stop("m1 must be an output from 'exdqlmISVB()' or 'exdqlmMCMC()'")
   }
+  if(cr.percent<=0 | cr.percent>=1){
+    stop("cr.percent must be between 0 and 1")
+  }
+  half.alpha = (1 - cr.percent)/2
   if(is.null(fFF)){
      if(TT-start.t < k){ stop("fFF and fGG must be provided for forecasts extending past the length of the estimated exdqlm")}
      fFF = m1$model$FF[,(start.t+1):(start.t+k)]
@@ -84,22 +89,22 @@ exdqlmForecast = function(y,start.t,k,m1,fFF=NULL,fGG=NULL,plot=TRUE,add=FALSE,c
   if(plot){
     # filtered estimate for reference
     qmap = apply(matrix(m1$model$FF[,1:start.t]*m1$theta.out$fm[,1:start.t],p,start.t),2,sum)
-    qlb = qmap + sapply(1:start.t,function(t){stats::qnorm(0.025,0,sqrt(t(m1$model$FF[,t])%*%m1$theta.out$fC[,,t]%*%m1$model$FF[,t]))})
-    qub = qmap + sapply(1:start.t,function(t){stats::qnorm(0.975,0,sqrt(t(m1$model$FF[,t])%*%m1$theta.out$fC[,,t]%*%m1$model$FF[,t]))})
+    qlb = qmap + sapply(1:start.t,function(t){stats::qnorm(half.alpha,0,sqrt(t(m1$model$FF[,t])%*%m1$theta.out$fC[,,t]%*%m1$model$FF[,t]))})
+    qub = qmap + sapply(1:start.t,function(t){stats::qnorm(cr.percent + half.alpha,0,sqrt(t(m1$model$FF[,t])%*%m1$theta.out$fC[,,t]%*%m1$model$FF[,t]))})
     # forecast estimates
-    fqlb = ff+stats::qnorm(0.025,0,sqrt(fQ))
-    fqub = ff+stats::qnorm(0.975,0,sqrt(fQ))
+    fqlb = ff+stats::qnorm(half.alpha,0,sqrt(fQ))
+    fqub = ff+stats::qnorm(cr.percent + half.alpha,0,sqrt(fQ))
     # filtered and forecasted quantiles & CrIs
     ts.xy = grDevices::xy.coords(y)
     if(!add){
-      stats::plot.ts(y,xlim=c(ts.xy$x[start.t]-2*k,ts.xy$x[start.t]+k),ylim=range(c(y,qlb,qub,fqlb,fqub)),type="l",ylab="quantile forecast",col="dark grey",xlab="time")
+      stats::plot.ts(y,xlim=c(ts.xy$x[start.t]-2*k*diff(ts.xy$x)[1],ts.xy$x[start.t]+k*diff(ts.xy$x)[1]),ylim=range(c(y,qlb,qub,fqlb,fqub)),type="l",ylab="quantile forecast",col="dark grey",xlab="time")
     }
     graphics::lines(ts.xy$x[1:start.t],qlb,col=cols[1],lty=3)
     graphics::lines(ts.xy$x[1:start.t],qub,col=cols[1],lty=3)
     graphics::lines(ts.xy$x[1:start.t],qmap,col=cols[1],lwd=1.5)
-    graphics::lines(ts.xy$x[start.t]:(ts.xy$x[start.t]+k),c(qmap[start.t],ff),col=cols[2])
-    graphics::lines(ts.xy$x[start.t]:(ts.xy$x[start.t]+k),c(qub[start.t],fqub),col=cols[2],lty=3)
-    graphics::lines(ts.xy$x[start.t]:(ts.xy$x[start.t]+k),c(qlb[start.t],fqlb),col=cols[2],lty=3)
+    graphics::lines(seq(from = ts.xy$x[start.t], by = diff(ts.xy$x)[1], length.out = k+1),c(qmap[start.t],ff),col=cols[2])
+    graphics::lines(seq(from = ts.xy$x[start.t], by = diff(ts.xy$x)[1], length.out = k+1),c(qub[start.t],fqub),col=cols[2],lty=3)
+    graphics::lines(seq(from = ts.xy$x[start.t], by = diff(ts.xy$x)[1], length.out = k+1),c(qlb[start.t],fqlb),col=cols[2],lty=3)
   }
 
   # return forecast distributions
