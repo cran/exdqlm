@@ -218,6 +218,7 @@ check_ts = function(dat){
   return(invisible(dat))
 }
 #
+is.exdqlm = function(m){ return(inherits(m,"exdqlm")) }
 
 
 

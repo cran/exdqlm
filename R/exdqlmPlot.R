@@ -29,7 +29,7 @@ exdqlmPlot <- function(y,m1,add=FALSE,col="purple",cr.percent=0.95){
 
   # check inputs
   check_ts(y)
-  if(class(m1) != c("exdqlm")){
+  if(!is.exdqlm(m1)){
     stop("m1 must be an output from 'exdqlmISVB()' or 'exdqlmMCMC()'")
     }
   TT = length(y)

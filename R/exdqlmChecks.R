@@ -35,7 +35,7 @@ exdqlmChecks <- function(y,m1,m2=NULL,plot=TRUE,cols=c("grey","grey"),ref=NULL){
   # check inputs
   check_ts(y)
   TT = length(y)
-  if(class(m1) != c("exdqlm")){
+  if(!is.exdqlm(m1)){
     stop("m1 must be an output from 'exdqlmISVB()' or 'exdqlmMCMC()'")
   }
   if(dim(m1$samp.theta)[2] != TT){
@@ -71,7 +71,7 @@ exdqlmChecks <- function(y,m1,m2=NULL,plot=TRUE,cols=c("grey","grey"),ref=NULL){
   ### m2
   if(!is.null(m2)){
     # check inputs
-    if(class(m2) != c("exdqlm")){
+    if(!is.exdqlm(m2)){
       stop("m2 must be an output from 'exdqlmISVB()' or 'exdqlmMCMC()'")
     }
     if(dim(m1$samp.theta)[2] != TT){

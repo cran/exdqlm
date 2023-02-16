@@ -37,7 +37,7 @@ exdqlmForecast = function(y,start.t,k,m1,fFF=NULL,fGG=NULL,plot=TRUE,add=FALSE,c
   check_ts(y)
   p = dim(m1$model$GG)[1]
   TT = dim(m1$model$GG)[3]
-  if(class(m1) != c("exdqlm")){
+  if(!is.exdqlm(m1)){
     stop("m1 must be an output from 'exdqlmISVB()' or 'exdqlmMCMC()'")
   }
   if(cr.percent<=0 | cr.percent>=1){

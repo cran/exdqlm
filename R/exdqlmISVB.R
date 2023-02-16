@@ -91,7 +91,7 @@ exdqlmISVB<-function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigma=
     PriorSigma$a_sig = (m_sigma^2)/(v_sigma) + 2
     PriorSigma$b_sig = (m_sigma^3)/(v_sigma) + m_sigma
   }else{
-    if(class(PriorSigma) != "list" | any( is.na( match(c("a_sig", "b_sig"),names(PriorSigma)) ) )){
+    if(!is.list(PriorSigma) | any( is.na( match(c("a_sig", "b_sig"),names(PriorSigma)) ) )){
       stop("`PriorSigma` must be a list containing `a_sig` and `b_sig`")
       }
   }
@@ -101,7 +101,7 @@ exdqlmISVB<-function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigma=
     PriorGamma$s_gam = 1
     PriorGamma$df_gam = 1
    }else{
-     if(class(PriorGamma) != "list" | any( is.na( match(c("m_gam", "s_gam", "df_gam"),names(PriorGamma)) ) )){
+     if(!is.list(PriorGamma) | any( is.na( match(c("m_gam", "s_gam", "df_gam"),names(PriorGamma)) ) )){
        stop("`PriorGamma` must be a list containing `m_gam`,`s_gam`, and `df_gam`")
      }
    }

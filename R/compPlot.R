@@ -33,7 +33,7 @@ compPlot <- function(y, m1, index, add = FALSE, col="purple", just.theta = FALSE
 
   # check inputs
   check_ts(y)
-  if(class(m1) != c("exdqlm")){
+  if(!is.exdqlm(m1)){
     stop("m1 must be an output from 'exdqlmISVB()' or 'exdqlmMCMC()'")
   }
   TT = length(y)

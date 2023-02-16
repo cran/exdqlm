@@ -1,3 +1,10 @@
+# exdqlm 0.1.3
+- exdqlm 0.1.2 was archived on 2022-10-23 as requires archived package 'dlm'. 'dlm' now back on CRAN.
+- Fixes and general improvements
+  - changed if/class conditions in exdqlmISVB, exdqlmMCMC to is()
+  - added the function is.exdqlm() to utils
+  - changed if/class conditions in compPlot, exdqlmChecks, exdqlmForcast, exdqlmPlot to is.exdqlm()
+  
 # exdqlm 0.1.2
 - Fixes and general improvements
   - fixed a bug in the forecast plotting routine
