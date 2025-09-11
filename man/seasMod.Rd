@@ -18,10 +18,10 @@ seasMod(p, h, m0, C0)
 \value{
 A list of the following:
 \itemize{
-\item FF - Observational vector.
-\item GG - Evolution matrix.
-\item m0 - Prior mean of the state vector.
-\item C0 - Prior covariance of the state vector.
+  \item FF - Observational vector.
+  \item GG - Evolution matrix.
+  \item m0 - Prior mean of the state vector.
+  \item C0 - Prior covariance of the state vector.
 }
 }
 \description{

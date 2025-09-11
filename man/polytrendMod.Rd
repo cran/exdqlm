@@ -9,17 +9,17 @@ polytrendMod(order, m0, C0)
 \arguments{
 \item{order}{The order of the polynomial model.}
 
-\item{m0}{Prior mean of the state vector. Default is \code{m0 = rep(0,order)}.}
+\item{m0}{Prior mean of the state vector. Default is `m0 = rep(0,order)`.}
 
-\item{C0}{Prior covariance of the state vector. Default is \code{C0 = 1e3*diag(order)}.}
+\item{C0}{Prior covariance of the state vector. Default is `C0 = 1e3*diag(order)`.}
 }
 \value{
 A list of the following:
 \itemize{
-\item FF - Observational vector.
-\item GG - Evolution matrix.
-\item m0 - Prior mean of the state vector.
-\item C0 - Prior covariance of the state vector.
+  \item FF - Observational vector.
+  \item GG - Evolution matrix.
+  \item m0 - Prior mean of the state vector.
+  \item C0 - Prior covariance of the state vector.
 }
 }
 \description{

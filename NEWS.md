@@ -1,3 +1,18 @@
+# exdqlm 0.1.4
+
+- CRAN hygiene & maintenance
+  - Removed legacy `MD5` file; added ignore so it won’t be re-created in builds.
+  - Dropped stray placeholder files (e.g., `.gitkeep`) from package sources.
+  - Tidied DESCRIPTION (`Imports`/`LinkingTo` clarified; encoding/notes consistent).
+  - Ensured no hidden or invalid files end up in the tarball.
+
+- Examples & tests
+  - Updated examples to keep `gamma` within valid bounds for the chosen `p0`.
+  - Converted tests to use exported package functions (no ad-hoc `sourceCpp()`).
+
+- Documentation
+  - Minor clarifications and consistency fixes in Rd pages.
+
 # exdqlm 0.1.3
 - exdqlm 0.1.2 was archived on 2022-10-23 as requires archived package 'dlm'. 'dlm' now back on CRAN.
 - Fixes and general improvements

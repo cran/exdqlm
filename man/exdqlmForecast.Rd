@@ -2,7 +2,7 @@
 % Please edit documentation in R/exdqlmForecast.R
 \name{exdqlmForecast}
 \alias{exdqlmForecast}
-\title{k-step-ahead Forecast}
+\title{k-step-ahead quantile forecasts}
 \usage{
 exdqlmForecast(
   y,
@@ -18,45 +18,55 @@ exdqlmForecast(
 )
 }
 \arguments{
-\item{y}{A univariate time-series.}
+\item{y}{A univariate numeric time series (vector or \code{ts}) of the observed response.}
 
-\item{start.t}{Time index at which to start the forecast.}
+\item{start.t}{Integer index at which forecasts start (must be within the span of the fitted model in \code{m1}).}
 
-\item{k}{Number of k-steps-ahead to forecast.}
+\item{k}{Integer; number of steps ahead to forecast.}
 
-\item{m1}{An object of class "\code{exdqlm}".}
+\item{m1}{A fitted exDQLM model object, typically returned by \code{\link[=exdqlmISVB]{exdqlmISVB()}} or \code{\link[=exdqlmMCMC]{exdqlmMCMC()}}.}
 
-\item{fFF}{State vector for the forecast steps. \code{fFF} must have either 1 (non-time-varying) or k (time-varying) columns. The dimension of \code{fFF} must match the estimated exdqlm in \code{m1}.}
+\item{fFF}{Optional state vector(s) for the forecast steps. A numeric matrix with
+\eqn{p} rows and either 1 column (non–time-varying) or \code{k} columns (time-varying).
+Its dimension must match the fitted model in \code{m1}.}
 
-\item{fGG}{Evolution matrix for the forecast steps. \code{fGG} must be either a matrix (non-time-varying) or an array of depth k (time-varying). The dimensions of \code{fGG} must match the estimated exdqlm in \code{m1}.}
+\item{fGG}{Optional evolution matrix/matrices for the forecast steps. Either a numeric
+\eqn{p \times p} matrix (non–time-varying) or a \eqn{p \times p \times k} array (time-varying).
+Its dimensions must match the fitted model in \code{m1}.}
 
-\item{plot}{If \code{TRUE} the forecasted quantile estimates and 95\% credible intervals are plotted, along with the filtered quantile estimates and 95\% credible intervals for reference. Default is \code{TRUE}.}
+\item{plot}{Logical; if \code{TRUE}, plot filtered and forecast quantiles with
+equal–tailed credible intervals. Default \code{TRUE}.}
 
-\item{add}{If \code{TRUE}, the forecasted quantile will be added to the existing plot. Default is \code{FALSE}.}
+\item{add}{Logical; if \code{TRUE}, add the forecasted quantiles to the current plot.
+Default \code{FALSE}.}
 
-\item{cols}{Two colors used to plot filtered and forecasted quantile estimates respectively. Default is \code{c("purple","magenta")}.}
+\item{cols}{Character vector of length 2 giving the colors for filtered and forecasted
+quantiles respectively. Default \code{c("purple","magenta")}.}
 
-\item{cr.percent}{Percentage used in the calculation of the credible intervals.}
+\item{cr.percent}{Numeric in \code{(0, 1)}; the probability mass for the credible
+intervals (e.g., \code{0.95}). Default \code{0.95}.}
 }
 \value{
-A list containing the following is returned:
+A list with components:
 \itemize{
-\item \code{fa} - The forecasted state mean vectors.
-\item \code{fR} - The forecasted state covariance matrices.
-\item \code{ff} - The forecasted quantile mean estimates.
-\item \code{fQ} - The forecasted quantile variances.
+\item \code{fa} Forecast state mean vectors (\eqn{p \times k} matrix).
+\item \code{fR} Forecast state covariance matrices (\eqn{p \times p \times k} array).
+\item \code{ff} Forecast quantile means (length-\code{k} numeric).
+\item \code{fQ} Forecast quantile variances (length-\code{k} numeric).
 }
 }
 \description{
-The function estimates and plots the k-step-ahead forecasted quantile distribution from the filtered quantile estimates.
+Computes filtered and \code{k}-step-ahead forecast quantiles from a fitted
+dynamic quantile model and optionally adds them to an existing plot.
 }
 \examples{
 \donttest{
-y = scIVTmag[1:100]
-model = polytrendMod(1,quantile(y,0.85),10)
-M0 = exdqlmISVB(y,p0=0.85,model,df=c(0.98),dim.df = c(1),
-                   gam.init=-3.5,sig.init=15)
-exdqlmForecast(y,start.t=90,k=10,M0)
+ # Toy example; keep small and fast
+ y <- scIVTmag[1:100]
+ model <- polytrendMod(1, stats::quantile(y, 0.85), 10)
+ M0 <- exdqlmISVB(y, p0 = 0.85, model, df = c(0.98), dim.df = c(1),
+                  gam.init = -3.5, sig.init = 15)
+ exdqlmForecast(y, start.t = 90, k = 10, m1 = M0)
 }
 
 }

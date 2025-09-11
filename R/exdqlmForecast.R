@@ -1,36 +1,47 @@
-#' k-step-ahead Forecast
+#' k-step-ahead quantile forecasts
 #'
-#' The function estimates and plots the k-step-ahead forecasted quantile distribution from the filtered quantile estimates.
+#' Computes filtered and \code{k}-step-ahead forecast quantiles from a fitted
+#' dynamic quantile model and optionally adds them to an existing plot.
 #'
-#' @inheritParams exdqlmISVB
-#' @param start.t Time index at which to start the forecast.
-#' @param k Number of k-steps-ahead to forecast.
-#' @param m1 An object of class "`exdqlm`".
-#' @param fFF State vector for the forecast steps. `fFF` must have either 1 (non-time-varying) or k (time-varying) columns. The dimension of `fFF` must match the estimated exdqlm in `m1`.
-#' @param fGG Evolution matrix for the forecast steps. `fGG` must be either a matrix (non-time-varying) or an array of depth k (time-varying). The dimensions of `fGG` must match the estimated exdqlm in `m1`.
-#' @param plot If `TRUE` the forecasted quantile estimates and 95% credible intervals are plotted, along with the filtered quantile estimates and 95% credible intervals for reference. Default is `TRUE`.
-#' @param add If `TRUE`, the forecasted quantile will be added to the existing plot. Default is `FALSE`.
-#' @param cols Two colors used to plot filtered and forecasted quantile estimates respectively. Default is `c("purple","magenta")`.
-#' @param cr.percent Percentage used in the calculation of the credible intervals.
+#' @param y A univariate numeric time series (vector or \code{ts}) of the observed response.
+#' @param start.t Integer index at which forecasts start (must be within the span of the fitted model in \code{m1}).
+#' @param k Integer; number of steps ahead to forecast.
+#' @param m1 A fitted exDQLM model object, typically returned by [exdqlmISVB()] or [exdqlmMCMC()].
+#' @param fFF Optional state vector(s) for the forecast steps. A numeric matrix with
+#'   \eqn{p} rows and either 1 column (non–time-varying) or \code{k} columns (time-varying).
+#'   Its dimension must match the fitted model in \code{m1}.
+#' @param fGG Optional evolution matrix/matrices for the forecast steps. Either a numeric
+#'   \eqn{p \times p} matrix (non–time-varying) or a \eqn{p \times p \times k} array (time-varying).
+#'   Its dimensions must match the fitted model in \code{m1}.
+#' @param plot Logical; if \code{TRUE}, plot filtered and forecast quantiles with
+#'   equal–tailed credible intervals. Default \code{TRUE}.
+#' @param add Logical; if \code{TRUE}, add the forecasted quantiles to the current plot.
+#'   Default \code{FALSE}.
+#' @param cols Character vector of length 2 giving the colors for filtered and forecasted
+#'   quantiles respectively. Default \code{c("purple","magenta")}.
+#' @param cr.percent Numeric in \code{(0, 1)}; the probability mass for the credible
+#'   intervals (e.g., \code{0.95}). Default \code{0.95}.
 #'
-#' @return A list containing the following is returned:
-#'  \itemize{
-#'  \item `fa` - The forecasted state mean vectors.
-#'  \item `fR` - The forecasted state covariance matrices.
-#'  \item `ff` - The forecasted quantile mean estimates.
-#'  \item `fQ` - The forecasted quantile variances.
-#'  }
-#' @export
+#' @return A list with components:
+#' \itemize{
+#'   \item \code{fa} Forecast state mean vectors (\eqn{p \times k} matrix).
+#'   \item \code{fR} Forecast state covariance matrices (\eqn{p \times p \times k} array).
+#'   \item \code{ff} Forecast quantile means (length-\code{k} numeric).
+#'   \item \code{fQ} Forecast quantile variances (length-\code{k} numeric).
+#' }
 #'
 #' @examples
 #' \donttest{
-#' y = scIVTmag[1:100]
-#' model = polytrendMod(1,quantile(y,0.85),10)
-#' M0 = exdqlmISVB(y,p0=0.85,model,df=c(0.98),dim.df = c(1),
-#'                    gam.init=-3.5,sig.init=15)
-#' exdqlmForecast(y,start.t=90,k=10,M0)
+#'  # Toy example; keep small and fast
+#'  y <- scIVTmag[1:100]
+#'  model <- polytrendMod(1, stats::quantile(y, 0.85), 10)
+#'  M0 <- exdqlmISVB(y, p0 = 0.85, model, df = c(0.98), dim.df = c(1),
+#'                   gam.init = -3.5, sig.init = 15)
+#'  exdqlmForecast(y, start.t = 90, k = 10, m1 = M0)
 #' }
 #'
+#' @export
+
 exdqlmForecast = function(y,start.t,k,m1,fFF=NULL,fGG=NULL,plot=TRUE,add=FALSE,cols=c("purple","magenta"),cr.percent=0.95){
 
   # check inputs

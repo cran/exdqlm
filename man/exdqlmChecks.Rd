@@ -16,26 +16,26 @@ exdqlmChecks(
 \arguments{
 \item{y}{A univariate time-series.}
 
-\item{m1}{An object of class "\code{exdqlm}".}
+\item{m1}{An object of class "`exdqlm`".}
 
-\item{m2}{An optional additional object of class "\code{exdqlm}" to compare with \code{m1}.}
+\item{m2}{An optional additional object of class "`exdqlm`" to compare with `m1`.}
 
-\item{plot}{If \code{TRUE}, the following will be plotted for \code{m1} and \code{m2} (if provided): a qq-plot and ACF plot of the MAP one-step-ahead distribution sequence, and a time series plot of the standardized forecast errors.}
+\item{plot}{If `TRUE`, the following will be plotted for `m1` and `m2` (if provided): a qq-plot and ACF plot of the MAP one-step-ahead distribution sequence, and a time series plot of the standardized forecast errors.}
 
 \item{cols}{Color(s) used to plot diagnostics.}
 
-\item{ref}{Reference sample of size \code{length(y)} from a standard normal distribution used to compute the KL divergence.}
+\item{ref}{Reference sample of size `length(y)` from a standard normal distribution used to compute the KL divergence.}
 }
 \value{
 A list containing the following is returned:
-\itemize{
-\item \code{m1.uts} - The one-step-ahead distribution sequence of \code{m1}.
-\item \code{m1.KL} - The KL divergence of \code{m1.uts} and a standard normal.
-\item \code{m1.pplc} - The posterior predictive loss criterion of \code{m1} based off the check loss function.
-\item \code{m1.qq} - The ordered pairs of the qq-plot comparing \code{m1.uts} with a standard normal distribution.
-\item \code{m1.acf} - The autocorrelations of \code{m1.uts} by lag.
-}
-If \code{m2} is provided, analogous results for \code{m2} are also included in the list.
+ \itemize{
+ \item `m1.uts` - The one-step-ahead distribution sequence of `m1`.
+ \item `m1.KL` - The KL divergence of `m1.uts` and a standard normal.
+ \item `m1.pplc` - The posterior predictive loss criterion of `m1` based off the check loss function.
+ \item `m1.qq` - The ordered pairs of the qq-plot comparing `m1.uts` with a standard normal distribution.
+ \item `m1.acf` - The autocorrelations of `m1.uts` by lag.
+ }
+ If `m2` is provided, analogous results for `m2` are also included in the list.
 }
 \description{
 The function computes the following for the model(s) provided: the posterior predictive loss criterion based off the check loss, the one-step-ahead distribution sequence and its KL divergence from normality. The function also plots the following: the qq-plot and ACF plot corresponding to the one-step-ahead distribution sequence, and a time series plot of the MAP standard forecast errors.

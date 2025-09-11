@@ -30,61 +30,61 @@ exdqlmMCMC(
 
 \item{p0}{The quantile of interest, a value between 0 and 1.}
 
-\item{model}{List of the state-space model including \code{GG}, \code{FF}, prior parameters \code{m0} and \code{C0}.}
+\item{model}{List of the state-space model including `GG`, `FF`, prior parameters `m0` and `C0`.}
 
 \item{df}{Discount factors for each block.}
 
 \item{dim.df}{Dimension of each block of discount factors.}
 
-\item{fix.gamma}{Logical value indicating whether to fix gamma at \code{gam.init}. Default is \code{FALSE}.}
+\item{fix.gamma}{Logical value indicating whether to fix gamma at `gam.init`. Default is `FALSE`.}
 
-\item{gam.init}{Initial value for gamma (skewness parameter), or value at which gamma will be fixed if \code{fix.gamma=TRUE}.}
+\item{gam.init}{Initial value for gamma (skewness parameter), or value at which gamma will be fixed if `fix.gamma=TRUE`.}
 
-\item{fix.sigma}{Logical value indicating whether to fix sigma at \code{sig.init}. Default is \code{TRUE}.}
+\item{fix.sigma}{Logical value indicating whether to fix sigma at `sig.init`. Default is `TRUE`.}
 
-\item{sig.init}{Initial value for sigma (scale parameter), or value at which sigma will be fixed if \code{fix.sigma=TRUE}.}
+\item{sig.init}{Initial value for sigma (scale parameter), or value at which sigma will be fixed if `fix.sigma=TRUE`.}
 
-\item{dqlm.ind}{Logical value indicating whether to fix gamma at \code{0}, reducing the exDQLM to the special case of the DQLM. Default is \code{FALSE}.}
+\item{dqlm.ind}{Logical value indicating whether to fix gamma at `0`, reducing the exDQLM to the special case of the DQLM. Default is `FALSE`.}
 
 \item{Sig.mh}{Covariance matrix used in the random walk MH step to jointly sample sigma and gamma.}
 
-\item{joint.sample}{Logical value indicating whether or not to recompute \code{Sig.mh} based off the initial burn-in samples of gamma and sigma. Default is \code{FALSE}.}
+\item{joint.sample}{Logical value indicating whether or not to recompute `Sig.mh` based off the initial burn-in samples of gamma and sigma. Default is `FALSE`.}
 
-\item{n.burn}{Number of MCMC iterations to burn. Default is \code{n.burn = 2000}.}
+\item{n.burn}{Number of MCMC iterations to burn. Default is `n.burn = 2000`.}
 
-\item{n.mcmc}{Number of MCMC iterations to sample. Default is \code{n.mcmc = 1500}.}
+\item{n.mcmc}{Number of MCMC iterations to sample. Default is `n.mcmc = 1500`.}
 
-\item{init.from.isvb}{Logical value indicating whether or not to initialize the MCMC using the ISVB algorithm. Default is \code{TRUE}.}
+\item{init.from.isvb}{Logical value indicating whether or not to initialize the MCMC using the ISVB algorithm. Default is `TRUE`.}
 
-\item{PriorSigma}{List of parameters for inverse gamma prior on sigma; shape \code{a_sig} and scale \code{b_sig}. Default is an inverse gamma with mean 1 (or \code{sig.init} if provided) and variance 10.}
+\item{PriorSigma}{List of parameters for inverse gamma prior on sigma; shape `a_sig` and scale `b_sig`. Default is an inverse gamma with mean 1 (or `sig.init` if provided) and variance 10.}
 
-\item{PriorGamma}{List of parameters for truncated student-t prior on gamma; center \code{m_gam}, scale \code{s_gam} and degrees of freedom \code{df_gam}. Default is a standard student-t with 1 degree of freedom, truncated to the support of gamma.}
+\item{PriorGamma}{List of parameters for truncated student-t prior on gamma; center `m_gam`, scale `s_gam` and degrees of freedom `df_gam`. Default is a standard student-t with 1 degree of freedom, truncated to the support of gamma.}
 
 \item{verbose}{Logical value indicating whether progress should be displayed.}
 }
 \value{
 A list of the following is returned:
-\itemize{
-\item \code{run.time} - Algorithm run time in seconds.
-\item \code{model} - List of the state-space model including \code{GG}, \code{FF}, prior parameters \code{m0} and \code{C0}.
-\item \code{p0} - The quantile which was estimated.
-\item \code{df} - Discount factors used for each block.
-\item \code{dim.df} - Dimension used for each block of discount factors.
-\item \code{samp.theta} - Posterior sample of the state vector.
-\item \code{samp.post.pred} - Sample of the posterior predictive distributions.
-\item \code{map.standard.forecast.errors} - MAP standardized one-step-ahead forecast errors.
-\item \code{samp.sigma} - Posterior sample of scale parameter sigma.
-\item \code{samp.vts} - Posterior sample of latent parameters, v_t.
-\item \code{theta.out} - List containing the distributions of the state vector including filtered distribution parameters (\code{fm} and \code{fC}) and smoothed distribution parameters (\code{sm} and \code{sC}).
+ \itemize{
+  \item `run.time` - Algorithm run time in seconds.
+  \item `model` - List of the state-space model including `GG`, `FF`, prior parameters `m0` and `C0`.
+  \item `p0` - The quantile which was estimated.
+  \item `df` - Discount factors used for each block.
+  \item `dim.df` - Dimension used for each block of discount factors.
+  \item `samp.theta` - Posterior sample of the state vector.
+  \item `samp.post.pred` - Sample of the posterior predictive distributions.
+  \item `map.standard.forecast.errors` - MAP standardized one-step-ahead forecast errors.
+  \item `samp.sigma` - Posterior sample of scale parameter sigma.
+  \item `samp.vts` - Posterior sample of latent parameters, v_t.
+  \item `theta.out` - List containing the distributions of the state vector including filtered distribution parameters (`fm` and `fC`) and smoothed distribution parameters (`sm` and `sC`).
 }
-If \code{dqlm.ind=FALSE}, the list also contains the following:
+If `dqlm.ind=FALSE`, the list also contains the following:
 \itemize{
-\item \code{samp.gamma} - Posterior sample of skewness parameter gamma.
-\item \code{samp.sts} - Posterior sample of latent parameters, s_t.
-\item \code{init.log.sigma} - Burned samples of log sigma from the random walk MH joint sampling of sigma and gamma.
-\item \code{init.logit.gamma} - Burned samples of logit gamma from the random walk MH joint sampling of sigma and gamma.
-\item \code{accept.rate} - Acceptance rate of the MH step.
-\item \code{Sig.mh} - Covariance matrix used in MH step to jointly sample sigma and gamma.
+  \item `samp.gamma` - Posterior sample of skewness parameter gamma.
+  \item `samp.sts` - Posterior sample of latent parameters, s_t.
+  \item `init.log.sigma` - Burned samples of log sigma from the random walk MH joint sampling of sigma and gamma.
+  \item `init.logit.gamma` - Burned samples of logit gamma from the random walk MH joint sampling of sigma and gamma.
+  \item `accept.rate` - Acceptance rate of the MH step.
+  \item `Sig.mh` - Covariance matrix used in MH step to jointly sample sigma and gamma.
 }
 }
 \description{

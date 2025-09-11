@@ -1,8 +1,8 @@
 #
-log.g<-function(gam){	log(2)+stats::pnorm(-abs(gam),log=T)+0.5*gam^2 }
-L.fn<-function(p0){ stats::uniroot(function(gam) exp(log.g(gam))-(1-p0), c(-1000,0))$root }
-U.fn<-function(p0){ stats::uniroot(function(gam) exp(log.g(gam))-p0, c(0,1000))$root }
-p.fn<-function(p0,gam){ (p0-as.numeric(gam<0))/exp(log.g(gam))+as.numeric(gam<0)}
+log_g<-function(gam){	base::log(2)+stats::pnorm(-abs(gam),log=TRUE)+0.5*gam^2 }
+L.fn<-function(p0){ stats::uniroot(function(gam) exp(log_g(gam))-(1-p0), c(-1000,0))$root }
+U.fn<-function(p0){ stats::uniroot(function(gam) exp(log_g(gam))-p0, c(0,1000))$root }
+p.fn<-function(p0,gam){ (p0-as.numeric(gam<0))/exp(log_g(gam))+as.numeric(gam<0)}
 A.fn<-function(p0,gam){ temp.p = p.fn(p0,gam); return((1-2*temp.p)/(temp.p*(1-temp.p))) }
 B.fn<-function(p0,gam){ temp.p = p.fn(p0,gam); return((2)/(temp.p*(1-temp.p))) }
 C.fn<-function(p0,gam){ temp.p = p.fn(p0,gam); return((as.numeric(gam>0)-temp.p)^(-1)) }
