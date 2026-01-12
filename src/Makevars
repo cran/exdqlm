@@ -1,0 +1,2 @@
+PKG_CPPFLAGS = -I. -I../inst/include -include zzz_preinclude.h
+PKG_CXXFLAGS = -U_GLIBCXX_ASSERTIONS

@@ -1,3 +1,31 @@
+
+# exdqlm 0.2.0
+
+- New AL/GAL helper functions with C++ backends:
+  - `dexal()`, `pexal()`, `qexal()`, `rexal()` for density, cdf, quantile and random generation.
+  - `get_gamma_bounds()` to compute valid `(L, U)` bounds for `gamma` given `p0`.
+  - Implementation details:
+    - Core numerics in C++ via Rcpp/RcppArmadillo and BH (Boost) for root-finding and Φ.
+    - Parameter validation to keep `gamma` within bounds; clearer errors.
+- Updated exdqlmISVB() and exdqlmMCMC() to use rexal()
+- exdqlmChecks() renamed exdqlmDiagnostics()
+- Improved the performance of plotting functions exdqlmPlot() and compPlot()
+- Return changes
+  - functions polytrendMod(), and seasMod() now return objects of class 'exdqlm'
+  - function exdqlmISVB() and (inherently) transfn_exdqlmISVB() now return objects of class 'exdqlmISVB'
+  - function exdqlmMCMC() now returns objects of class 'exdqlmMCMC'
+  - function exdqlmDiagnostics() now returns objects of class 'exdqlmDiagnostic'
+  - returns from exdqlmMCMC(), exdqlmISVB(), and transfn_exdqlmISVB() now include data (y)
+- Input changes
+  - y removed from the inputs of exdqlmDiagnostics(), exdqlmForecast(), compPlot(), and exdqlmPlot()
+- Added generics_etc.R which includes generics & other functions for the objects of class 'exdqlm', 'exdqlmISVB','exdqlmMCMC', 'exdqlmDiagnostic', & 'exdqlmForecast'
+- Removed dlmMod.R and replaced with the more robust function as.exdqlm (in generics_etc.R), which creates 'exdqlm' objects
+- Removed combineMods.R and replaced with addition for 'exdqlm' objects (in generics_etc.R)
+- Testing & docs:
+  - Unit tests for pdf/cdf/quantile inverses and sampling sanity checks.
+  - Package-level docs updated; **vignettes intentionally deferred** for a later release.
+
+
 # exdqlm 0.1.4
 
 - CRAN hygiene & maintenance
@@ -5,11 +33,9 @@
   - Dropped stray placeholder files (e.g., `.gitkeep`) from package sources.
   - Tidied DESCRIPTION (`Imports`/`LinkingTo` clarified; encoding/notes consistent).
   - Ensured no hidden or invalid files end up in the tarball.
-
 - Examples & tests
   - Updated examples to keep `gamma` within valid bounds for the chosen `p0`.
   - Converted tests to use exported package functions (no ad-hoc `sourceCpp()`).
-
 - Documentation
   - Minor clarifications and consistency fixes in Rd pages.
 

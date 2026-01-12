@@ -2,8 +2,7 @@
 #'
 #' The function plots the MAP estimates and 95% credible intervals (CrIs) of the dynamic quantile of an exDQLM.
 #'
-#' @inheritParams exdqlmISVB
-#' @param m1 An object of class "`exdqlm`".
+#' @param m1 An object of class "\code{exdqlmMCMC}" or "\code{exdqlmISVB}".
 #' @param add If `TRUE`, the dynamic quantile will be added to existing plot.
 #' @param col Color of dynamic quantile to be plotted. Default is `purple`.
 #' @param cr.percent Percentage used in the calculation of the credible intervals.
@@ -22,20 +21,17 @@
 #' model = polytrendMod(1,quantile(y,0.85),10)
 #' M0 = exdqlmISVB(y,p0=0.85,model,df=c(0.98),dim.df = c(1),
 #'                    gam.init=-3.5,sig.init=15)
-#' exdqlmPlot(y,M0,col="blue")
+#' exdqlmPlot(M0,col="blue")
 #' }
 #'
-exdqlmPlot <- function(y,m1,add=FALSE,col="purple",cr.percent=0.95){
+exdqlmPlot <- function(m1,add=FALSE,col="purple",cr.percent=0.95){
 
   # check inputs
-  check_ts(y)
-  if(!is.exdqlm(m1)){
+  if(!is.exdqlmMCMC(m1) && !is.exdqlmISVB(m1)){
     stop("m1 must be an output from 'exdqlmISVB()' or 'exdqlmMCMC()'")
-    }
+  }
+  y = m1$y
   TT = length(y)
-  if(dim(m1$samp.theta)[2] != TT){
-    stop("length of dynamic quantile does not match data")
-    }
   p = dim(m1$samp.theta)[1]
   n.samp = dim(m1$samp.theta)[3]
   if(cr.percent<=0 | cr.percent>=1){
@@ -44,10 +40,11 @@ exdqlmPlot <- function(y,m1,add=FALSE,col="purple",cr.percent=0.95){
   half.alpha = (1 - cr.percent)/2
 
   # 95% CrIs
-  quant.samps = apply(array(m1$model$FF,c(p,TT,n.samp))*m1$samp.theta,c(2,3),sum)
+  big_FF = array(m1$model$FF,c(p,TT,n.samp))
+  quant.samps = colSums(big_FF*m1$samp.theta)
   map.quant = rowMeans(quant.samps)
-  lb.quant = apply(quant.samps,1,stats::quantile,probs=half.alpha)
-  ub.quant = apply(quant.samps,1,stats::quantile,probs=cr.percent + half.alpha)
+  lb.quant = matrixStats::rowQuantiles(quant.samps, probs = half.alpha)
+  ub.quant = matrixStats::rowQuantiles(quant.samps, probs = cr.percent + half.alpha)
 
   # plot
   if(!add){

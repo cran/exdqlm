@@ -20,8 +20,9 @@
 #' @param PriorGamma List of parameters for truncated student-t prior on gamma; center `m_gam`, scale `s_gam` and degrees of freedom `df_gam`. Default is a standard student-t with 1 degree of freedom, truncated to the support of gamma.
 #' @param verbose Logical value indicating whether progress should be displayed.
 #'
-#' @return A list of the following is returned:
+#' @return A object of class "\code{exdqlmISVB}" containing the following:
 #' \itemize{
+#'    \item `y` - Time-series data used to fit the model.
 #'   \item `run.time` - Algorithm run time in seconds.
 #'   \item `iter` - Number of iterations until convergence was reached.
 #'   \item `dqlm.ind` - Logical value indicating whether gamma was fixed at `0`, reducing the exDQLM to the special case of the DQLM.
@@ -38,8 +39,9 @@
 #'   \item `samp.vts` - Posterior sample of latent parameters, v_t, variational distributions.
 #'   \item `theta.out` - List containing the variational distribution of the state vector including filtered distribution parameters (`fm` and `fC`) and smoothed distribution parameters (`sm` and `sC`).
 #'   \item `vts.out` - List containing the variational distributions of latent parameters v_t.
+#'   \item `fix.sigma` Logical value indicating whether sigma was fixed at `sig.init`.
 #' }
-#' If `dqlm.ind=FALSE`, the list also contains:
+#' If `dqlm.ind=FALSE`, the object also contains:
 #' \itemize{
 #'   \item `gam.init` - Initial value for gamma, or value at which gamma was fixed if `fix.gamma=TRUE`.
 #'   \item `seq.gamma` - Sequence of gamma estimated by the algorithm until convergence.
@@ -47,8 +49,9 @@
 #'   \item `samp.sts` - Posterior sample of latent parameters, s_t, variational distributions.
 #'   \item `gammasig.out` - List containing the IS estimate of the variational distribution of sigma and gamma.
 #'   \item `sts.out` - List containing the variational distributions of latent parameters s_t.
+#'   \item `fix.gamma` Logical value indicating whether gamma was fixed at `gam.init`.
 #' }
-#' Or if `dqlm.ind=TRUE`, the list also contains:
+#' Or if `dqlm.ind=TRUE`, the object also contains:
 #'  \itemize{
 #'  \item `sig.out` - List containing the IS estimate of the variational distribution of sigma.
 #'  }
@@ -59,7 +62,7 @@
 #' y = scIVTmag[1:1095]
 #' trend.comp = polytrendMod(1,mean(y),10)
 #' seas.comp = seasMod(365,c(1,2,4),C0=10*diag(6))
-#' model = combineMods(trend.comp,seas.comp)
+#' model = trend.comp + seas.comp
 #' M0 = exdqlmISVB(y,p0=0.85,model,df=c(1,1),dim.df = c(1,6),
 #'                  gam.init=-3.5,sig.init=15,tol=0.05)
 #' }
@@ -390,31 +393,34 @@ exdqlmISVB<-function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigma=
     svd.sC = svd(new.theta.out$sC[,,t]); LL = svd.sC$u%*%diag(sqrt(svd.sC$d),p)
     new.theta.out$sm[,t] + LL%*%matrix(stats::rnorm(n.samp*p,0,1),p,n.samp)}
   samp_post_pred_t = function(t){
-    brms::rasym_laplace(1,colSums(matrix(FF[,t],p,n.samp)*samp.theta[,t,])+
-                    samp.sigma*C.fn(p0,samp.gamma)*abs(samp.gamma)*samp.sts[t,],samp.sigma,p.fn(p0,samp.gamma))}
+        rexal(n.samp,p.fn(p0,samp.gamma),colSums(matrix(FF[,t],p,n.samp)*samp.theta[,t,]) +
+           samp.sigma*C.fn(p0,samp.gamma)*abs(samp.gamma)*samp.sts[t,],samp.sigma,0)
+   }
   samp.theta = array(NA,c(p,TT,n.samp))
   samp.post.pred = matrix(NA,TT,n.samp)
   for(t in 1:TT){samp.theta[,t,] = samp_theta_t(t); samp.post.pred[t,] = samp_post_pred_t(t)}
 
   ### list results
   if(!dqlm.ind){
-    retlist = list(run.time=(run.time$toc-run.time$tic),iter=iter,dqlm.ind=dqlm.ind,
+    retlist = list(y=y,run.time=(run.time$toc-run.time$tic),iter=iter,dqlm.ind=dqlm.ind,
                    model=model,p0=p0,df=df,dim.df=dim.df,
                    sig.init=sig.init,seq.sigma=seq.sigma,gam.init=gam.init,seq.gamma=seq.gamma,
                    samp.theta=samp.theta,samp.post.pred=samp.post.pred,
                    map.standard.forecast.errors=new.theta.out$standard.forecast.errors,
                    samp.sigma=samp.sigma,samp.gamma=samp.gamma,samp.sts=samp.sts,samp.vts=samp.uts,
-                   theta.out=new.theta.out,gammasig.out=new.gamsig.out,sts.out=new.sts.out,vts.out=new.uts.out)
+                   theta.out=new.theta.out,gammasig.out=new.gamsig.out,sts.out=new.sts.out,vts.out=new.uts.out,
+                   fix.sigma=fix.sigma,fix.gamma=fix.gamma)
   }else{
-    retlist = list(run.time=(run.time$toc-run.time$tic),iter=iter,dqlm.ind=dqlm.ind,
+    retlist = list(y=y,run.time=(run.time$toc-run.time$tic),iter=iter,dqlm.ind=dqlm.ind,
                    model=model,p0=p0,df=df,dim.df=dim.df,
                    sig.init=sig.init,seq.sigma=seq.sigma,
                    samp.theta=samp.theta,samp.post.pred=samp.post.pred,
                    map.standard.forecast.errors=new.theta.out$standard.forecast.errors,
                    samp.sigma=samp.sigma,samp.vts=samp.uts,
-                   theta.out=new.theta.out,sig.out=new.gamsig.out,vts.out=new.uts.out)
+                   theta.out=new.theta.out,sig.out=new.gamsig.out,vts.out=new.uts.out,
+                   fix.sigma=fix.sigma)
   }
   # return results
-  class(retlist) <- "exdqlm"
+  class(retlist) <- "exdqlmISVB"
   return(retlist)
 }

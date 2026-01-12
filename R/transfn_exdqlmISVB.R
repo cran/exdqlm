@@ -9,7 +9,7 @@
 #' @param tf.m0 Prior mean of the transfer function component.
 #' @param tf.C0 Prior covariance of the transfer function component.
 #'
-#' @return A list of the following is returned:
+#' @return A object of class "\code{exdqlmISVB}" containing the following:
 #' \itemize{
 #'   \item `run.time` - Algorithm run time in seconds.
 #'   \item `iter` - Number of iterations until convergence was reached.
@@ -30,7 +30,7 @@
 #'   \item `vts.out` - List containing the variational distributions of latent parameters v_t.
 #'   \item `median.kt` - Median number of time steps until the effect of X_t is less than or equal to 1e-3.
 #' }
-#' If `dqlm.ind=FALSE`, the list also contains:
+#' If `dqlm.ind=FALSE`, the object also contains:
 #' \itemize{
 #'   \item `gam.init` - Initial value for gamma, or value at which gamma was fixed if `fix.gamma=TRUE`.
 #'   \item `seq.gamma` - Sequence of gamma estimated by the algorithm until convergence.
@@ -39,7 +39,7 @@
 #'   \item `gammasig.out` - List containing the IS estimate of the variational distribution of sigma and gamma.
 #'   \item `sts.out` - List containing the variational distributions of latent parameters s_t.
 #' }
-#' Or if `dqlm.ind=TRUE`, the list also contains:
+#' Or if `dqlm.ind=TRUE`, the object also contains:
 #' \itemize{
 #'   \item `sig.out` - List containing the IS estimate of the variational distribution of sigma.
 #'  }
@@ -51,7 +51,7 @@
 #' X = ELIanoms[1:1095]
 #' trend.comp = polytrendMod(1,mean(y),10)
 #' seas.comp = seasMod(365,c(1,2,4),C0=10*diag(6))
-#' model = combineMods(trend.comp,seas.comp)
+#' model = trend.comp + seas.comp
 #' M1 = transfn_exdqlmISVB(y,p0=0.85,model=model,
 #'                           X,df=c(1,1),dim.df = c(1,6),
 #'                           gam.init=-3.5,sig.init=15,
@@ -116,6 +116,7 @@ transfn_exdqlmISVB<-function(y,p0,model,X,df,dim.df,lam,tf.df,fix.gamma=FALSE,ga
   tf.model$FF = FF
   tf.model$m0 = c(model$m0,tf.m0)
   tf.model$C0 = magic::adiag(model$C0,tf.C0)
+  tf.model = as.exdqlm(tf.model)
   tf.model.df = c(df,matrix(tf.df,1,2))
   tf.model.dim.df = c(dim.df,rep(1,2))
 

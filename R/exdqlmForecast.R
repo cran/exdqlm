@@ -3,7 +3,6 @@
 #' Computes filtered and \code{k}-step-ahead forecast quantiles from a fitted
 #' dynamic quantile model and optionally adds them to an existing plot.
 #'
-#' @param y A univariate numeric time series (vector or \code{ts}) of the observed response.
 #' @param start.t Integer index at which forecasts start (must be within the span of the fitted model in \code{m1}).
 #' @param k Integer; number of steps ahead to forecast.
 #' @param m1 A fitted exDQLM model object, typically returned by [exdqlmISVB()] or [exdqlmMCMC()].
@@ -22,8 +21,13 @@
 #' @param cr.percent Numeric in \code{(0, 1)}; the probability mass for the credible
 #'   intervals (e.g., \code{0.95}). Default \code{0.95}.
 #'
-#' @return A list with components:
+#' @return A object of class "\code{exdqlmForecast}" containing the following:
 #' \itemize{
+#'   \item \code{start.t} Integer index at which forecasts start (within the span of the fitted model in \code{m1}).
+#'   \item \code{k} Integer; number of steps ahead forecasted.
+#'   \item \code{m1} A fitted exDQLM model object, typically returned by [exdqlmISVB()] or [exdqlmMCMC()].
+#'   \item \code{cr.percent} Numeric in \code{(0, 1)}; the probability mass for the credible
+#'   intervals (e.g., \code{0.95}).
 #'   \item \code{fa} Forecast state mean vectors (\eqn{p \times k} matrix).
 #'   \item \code{fR} Forecast state covariance matrices (\eqn{p \times p \times k} array).
 #'   \item \code{ff} Forecast quantile means (length-\code{k} numeric).
@@ -37,18 +41,18 @@
 #'  model <- polytrendMod(1, stats::quantile(y, 0.85), 10)
 #'  M0 <- exdqlmISVB(y, p0 = 0.85, model, df = c(0.98), dim.df = c(1),
 #'                   gam.init = -3.5, sig.init = 15)
-#'  exdqlmForecast(y, start.t = 90, k = 10, m1 = M0)
+#'  exdqlmForecast(start.t = 90, k = 10, m1 = M0)
 #' }
 #'
 #' @export
 
-exdqlmForecast = function(y,start.t,k,m1,fFF=NULL,fGG=NULL,plot=TRUE,add=FALSE,cols=c("purple","magenta"),cr.percent=0.95){
+exdqlmForecast = function(start.t,k,m1,fFF=NULL,fGG=NULL,plot=TRUE,add=FALSE,cols=c("purple","magenta"),cr.percent=0.95){
 
   # check inputs
-  check_ts(y)
+  y = m1$y
   p = dim(m1$model$GG)[1]
   TT = dim(m1$model$GG)[3]
-  if(!is.exdqlm(m1)){
+  if(!is.exdqlmMCMC(m1) && !is.exdqlmISVB(m1)){
     stop("m1 must be an output from 'exdqlmISVB()' or 'exdqlmMCMC()'")
   }
   if(cr.percent<=0 | cr.percent>=1){
@@ -95,30 +99,13 @@ exdqlmForecast = function(y,start.t,k,m1,fFF=NULL,fGG=NULL,plot=TRUE,add=FALSE,c
       fQ[i] = t(fFF[,i])%*%fR[,,i]%*%fFF[,i]
     }
   }
+  retlist = list(start.t=start.t,k=k,cr.percent=cr.percent,m1=m1,fa=fa,fR=fR,ff=ff,fQ=fQ)
+  class(retlist) <- "exdqlmForecast"
 
   # plot forecast
-  if(plot){
-    # filtered estimate for reference
-    qmap = apply(matrix(m1$model$FF[,1:start.t]*m1$theta.out$fm[,1:start.t],p,start.t),2,sum)
-    qlb = qmap + sapply(1:start.t,function(t){stats::qnorm(half.alpha,0,sqrt(t(m1$model$FF[,t])%*%m1$theta.out$fC[,,t]%*%m1$model$FF[,t]))})
-    qub = qmap + sapply(1:start.t,function(t){stats::qnorm(cr.percent + half.alpha,0,sqrt(t(m1$model$FF[,t])%*%m1$theta.out$fC[,,t]%*%m1$model$FF[,t]))})
-    # forecast estimates
-    fqlb = ff+stats::qnorm(half.alpha,0,sqrt(fQ))
-    fqub = ff+stats::qnorm(cr.percent + half.alpha,0,sqrt(fQ))
-    # filtered and forecasted quantiles & CrIs
-    ts.xy = grDevices::xy.coords(y)
-    if(!add){
-      stats::plot.ts(y,xlim=c(ts.xy$x[start.t]-2*k*diff(ts.xy$x)[1],ts.xy$x[start.t]+k*diff(ts.xy$x)[1]),ylim=range(c(y,qlb,qub,fqlb,fqub)),type="l",ylab="quantile forecast",col="dark grey",xlab="time")
-    }
-    graphics::lines(ts.xy$x[1:start.t],qlb,col=cols[1],lty=3)
-    graphics::lines(ts.xy$x[1:start.t],qub,col=cols[1],lty=3)
-    graphics::lines(ts.xy$x[1:start.t],qmap,col=cols[1],lwd=1.5)
-    graphics::lines(seq(from = ts.xy$x[start.t], by = diff(ts.xy$x)[1], length.out = k+1),c(qmap[start.t],ff),col=cols[2])
-    graphics::lines(seq(from = ts.xy$x[start.t], by = diff(ts.xy$x)[1], length.out = k+1),c(qub[start.t],fqub),col=cols[2],lty=3)
-    graphics::lines(seq(from = ts.xy$x[start.t], by = diff(ts.xy$x)[1], length.out = k+1),c(qlb[start.t],fqlb),col=cols[2],lty=3)
-  }
+  if(plot){ plot(retlist, cols, add) }
 
   # return forecast distributions
-  return(invisible(list(fa=fa,fR=fR,ff=ff,fQ=fQ)))
+  return(invisible(retlist))
 }
 

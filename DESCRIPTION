@@ -1,6 +1,6 @@
 Package: exdqlm
 Title: Extended Dynamic Quantile Linear Models
-Version: 0.1.4
+Version: 0.2.0
 Authors@R: 
     c(person(given = "Raquel", family = "Barata",
              role = c("aut", "cre"),
@@ -19,12 +19,13 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3
 Depends: R (>= 2.10)
-Imports: stats, methods, graphics, dlm, coda, tictoc, magic, crch,
-        truncnorm, HyperbolicDist, GeneralizedHyperbolic, brms, FNN,
-        LaplacesDemon, grDevices
-NeedsCompilation: no
-Packaged: 2025-09-11 01:20:22 UTC; antonio
+Imports: stats, methods, graphics, coda, tictoc, magic, crch,
+        truncnorm, HyperbolicDist, GeneralizedHyperbolic, FNN,
+        LaplacesDemon, grDevices, Rcpp, matrixStats
+Packaged: 2026-01-12 18:44:48 UTC; raquel
 Repository: CRAN
-Date/Publication: 2025-09-11 05:40:08 UTC
-Suggests: testthat (>= 3.0.0)
+Date/Publication: 2026-01-12 19:00:08 UTC
+Suggests: rmarkdown, testthat (>= 3.0.0), ggplot2, pkgload
 Config/testthat/edition: 3
+LinkingTo: BH, Rcpp, RcppArmadillo
+NeedsCompilation: yes

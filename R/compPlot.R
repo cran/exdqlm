@@ -22,24 +22,21 @@
 #' y = scIVTmag[1:365]
 #' trend.comp = polytrendMod(2,rep(0,2),10*diag(2))
 #' seas.comp = seasMod(365,c(1,2,4),C0=10*diag(6))
-#' model = combineMods(trend.comp,seas.comp)
+#' model = trend.comp + seas.comp
 #' M0 = exdqlmISVB(y,p0=0.85,model,df=c(0.98,1),dim.df = c(2,6),
 #'                    gam.init=-3.5,sig.init=15,tol=0.05)
 #' # plot first harmonic component
-#' compPlot(y,M0,index=c(3,4),col="blue")
+#' compPlot(M0,index=c(3,4),col="blue")
 #' }
 #'
-compPlot <- function(y, m1, index, add = FALSE, col="purple", just.theta = FALSE, cr.percent = 0.95){
+compPlot <- function(m1, index, add = FALSE, col="purple", just.theta = FALSE, cr.percent = 0.95){
 
-  # check inputs
-  check_ts(y)
-  if(!is.exdqlm(m1)){
+  # check input
+  if(!is.exdqlmMCMC(m1) && !is.exdqlmISVB(m1)){
     stop("m1 must be an output from 'exdqlmISVB()' or 'exdqlmMCMC()'")
   }
+  y = m1$y
   TT = length(y)
-  if(dim(m1$samp.theta)[2] != TT){
-    stop("length of dynamic quantile does not match data")
-  }
   p = length(index)
   n.samp = dim(m1$samp.theta)[3]
   if(just.theta & p != 1){
@@ -52,13 +49,14 @@ compPlot <- function(y, m1, index, add = FALSE, col="purple", just.theta = FALSE
 
   # 95% CrIs
   if(!just.theta){
-      quant.samps = apply(array(m1$model$FF[index,],c(p,TT,n.samp))*array(m1$samp.theta[index,,],c(p,TT,n.samp)),c(2,3),sum)
+      big_FF = array(m1$model$FF[index,],c(p,TT,n.samp))
+      quant.samps = colSums(big_FF*array(m1$samp.theta[index,,],c(p,TT,n.samp)))
   }else{
       quant.samps = matrix(m1$samp.theta[index,,],TT,n.samp)
   }
   map.quant = rowMeans(quant.samps)
-  lb.quant = apply(quant.samps,1,stats::quantile,probs=half.alpha)
-  ub.quant = apply(quant.samps,1,stats::quantile,probs=cr.percent + half.alpha)
+  lb.quant = matrixStats::rowQuantiles(quant.samps, probs = half.alpha)
+  ub.quant = matrixStats::rowQuantiles(quant.samps, probs = cr.percent + half.alpha)
 
   # plot
   if(!add){

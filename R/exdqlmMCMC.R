@@ -9,8 +9,9 @@
 #' @param n.mcmc Number of MCMC iterations to sample. Default is `n.mcmc = 1500`.
 #' @param init.from.isvb Logical value indicating whether or not to initialize the MCMC using the ISVB algorithm. Default is `TRUE`.
 #'
-#' @return A list of the following is returned:
+#' @return A object of class "\code{exdqlmMCMC}" containing the following:
 #'  \itemize{
+#'   \item `y` - Time-series data used to fit the model.
 #'   \item `run.time` - Algorithm run time in seconds.
 #'   \item `model` - List of the state-space model including `GG`, `FF`, prior parameters `m0` and `C0`.
 #'   \item `p0` - The quantile which was estimated.
@@ -22,8 +23,10 @@
 #'   \item `samp.sigma` - Posterior sample of scale parameter sigma.
 #'   \item `samp.vts` - Posterior sample of latent parameters, v_t.
 #'   \item `theta.out` - List containing the distributions of the state vector including filtered distribution parameters (`fm` and `fC`) and smoothed distribution parameters (`sm` and `sC`).
+#'   \item `n.burn` Number of MCMC iterations that were burned.
+#'   \item `n.mcmc` Number of MCMC iterations that were sampled.
 #' }
-#' If `dqlm.ind=FALSE`, the list also contains the following:
+#' If `dqlm.ind=FALSE`, the object also contains the following:
 #' \itemize{
 #'   \item `samp.gamma` - Posterior sample of skewness parameter gamma.
 #'   \item `samp.sts` - Posterior sample of latent parameters, s_t.
@@ -39,7 +42,7 @@
 #' y = scIVTmag[1:100]
 #' trend.comp = polytrendMod(1,mean(y),10)
 #' seas.comp = seasMod(365,c(1,2,4),C0=10*diag(6))
-#' model = combineMods(trend.comp,seas.comp)
+#' model = trend.comp + seas.comp
 #' M2 = exdqlmMCMC(y,p0=0.85,model,df=c(1,1),dim.df = c(1,6),
 #'                 gam.init=-3.5,sig.init=15,
 #'                 n.burn=100,n.mcmc=150)
@@ -274,7 +277,7 @@ exdqlmMCMC <- function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigm
       ## backwards sample
       svd.sC = svd(C[,,TT])
       sam.theta[,TT] = m[,TT] + svd.sC$u%*%diag(sqrt(svd.sC$d),p)%*%stats::rnorm(p,0,1)
-      post.pred[TT] = brms::rasym_laplace(1,t(FF[,TT])%*%sam.theta[,TT]+c_tau*sigma*abs(gamma)*sts[TT],sigma,tau)
+      post.pred[TT] = rexal(1,tau,t(FF[,TT])%*%sam.theta[,TT]+c_tau*sigma*abs(gamma)*sts[TT],sigma,0)
       for(t in (TT-1):1){
         P = GG[,,(t+1)]%*%C[,,(t)]%*%t(GG[,,(t+1)])
         R = P + df.mat*P
@@ -286,7 +289,7 @@ exdqlmMCMC <- function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigm
         sC = C[,,t] - sB%*%GG[,,t]%*%C[,,t]
         svd.sC = svd((sC+t(sC))/2)
         sam.theta[,t] = sm + svd.sC$u%*%diag(sqrt(svd.sC$d),p)%*%stats::rnorm(p,0,1)
-        post.pred[t] = brms::rasym_laplace(1,t(FF[,t])%*%sam.theta[,t]+c_tau*sigma*abs(gamma)*sts[t],sigma,tau)
+        post.pred[t] = rexal(1,tau,t(FF[,t])%*%sam.theta[,t]+c_tau*sigma*abs(gamma)*sts[t],sigma,0)
       }
       return(list(standard.forecast.errors=standard.forecast.errors,post.pred=post.pred,sam.theta=sam.theta,fm=m,fC=C))
     }
@@ -404,13 +407,14 @@ exdqlmMCMC <- function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigm
     map.standard.forecast.errors = theta.out$standard.forecast.errors
 
     # exdqlm results
-    retlist = list(run.time=(run.time$toc-run.time$tic),model=model,p0=p0,df=df,dim.df=dim.df,
+    retlist = list(y=y,run.time=(run.time$toc-run.time$tic),model=model,p0=p0,df=df,dim.df=dim.df,
                 samp.theta = coda::as.mcmc(save.theta), theta.out = theta.out,
                 samp.post.pred = save.post.pred, map.standard.forecast.errors = map.standard.forecast.errors,
                 samp.sigma = coda::as.mcmc(save.sigma), samp.gamma = coda::as.mcmc(save.gamma),
                 init.log.sigma = coda::as.mcmc(init.log.sigma), init.logit.gamma = coda::as.mcmc(init.logit.gamma),
                 samp.vts = coda::as.mcmc(save.Ut), samp.sts = coda::as.mcmc(save.st),
-                accept.rate = n.accept/I, Sig.mh=Sig.mh)
+                accept.rate = n.accept/I, Sig.mh=Sig.mh,
+                n.burn=n.burn,n.mcmc=n.mcmc)
 
   }else{
     ######## DQLM
@@ -454,7 +458,7 @@ exdqlmMCMC <- function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigm
       ## backwards sample
       svd.sC = svd(C[,,TT])
       sam.theta[,TT] = m[,TT] + svd.sC$u%*%diag(sqrt(svd.sC$d),p)%*%stats::rnorm(p,0,1)
-      post.pred[TT] = brms::rasym_laplace(1,t(FF[,TT])%*%sam.theta[,TT],sigma,p0)
+      post.pred[TT] = rexal(1,p0,t(FF[,TT])%*%sam.theta[,TT],sigma,0)
       for(t in (TT-1):1){
         P = GG[,,(t+1)]%*%C[,,(t)]%*%t(GG[,,(t+1)])
         R = P + df.mat*P
@@ -466,7 +470,7 @@ exdqlmMCMC <- function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigm
         sC = C[,,t] - sB%*%GG[,,t]%*%C[,,t]
         svd.sC = svd((sC+t(sC))/2)
         sam.theta[,t] = sm + svd.sC$u%*%diag(sqrt(svd.sC$d),p)%*%stats::rnorm(p,0,1)
-        post.pred[t] = brms::rasym_laplace(1,t(FF[,t])%*%sam.theta[,t],sigma,p0)
+        post.pred[t] = rexal(1,p0,t(FF[,t])%*%sam.theta[,t],sigma,0)
       }
       return(list(standard.forecast.errors=standard.forecast.errors,post.pred=post.pred,sam.theta=sam.theta,fm=m,fC=C))
     }
@@ -527,14 +531,15 @@ exdqlmMCMC <- function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigm
     map.standard.forecast.errors = theta.out$standard.forecast.errors
 
     # dqlm results
-    retlist = list(run.time=(run.time$toc-run.time$tic),model=model,p0=p0,df=df,dim.df=dim.df,
+    retlist = list(y=y,run.time=(run.time$toc-run.time$tic),model=model,p0=p0,df=df,dim.df=dim.df,
                 samp.theta = coda::as.mcmc(save.theta), theta.out = theta.out,
                 samp.post.pred = save.post.pred, map.standard.forecast.errors = map.standard.forecast.errors,
                 samp.sigma = coda::as.mcmc(save.sigma),
-                samp.vts = coda::as.mcmc(save.Ut))
+                samp.vts = coda::as.mcmc(save.Ut),
+                n.burn=n.burn,n.mcmc=n.mcmc)
   }
 
   # return results
-  class(retlist) <- "exdqlm"
+  class(retlist) <- "exdqlmMCMC"
   return(retlist)
 }

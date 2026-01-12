@@ -6,6 +6,13 @@ p.fn<-function(p0,gam){ (p0-as.numeric(gam<0))/exp(log_g(gam))+as.numeric(gam<0)
 A.fn<-function(p0,gam){ temp.p = p.fn(p0,gam); return((1-2*temp.p)/(temp.p*(1-temp.p))) }
 B.fn<-function(p0,gam){ temp.p = p.fn(p0,gam); return((2)/(temp.p*(1-temp.p))) }
 C.fn<-function(p0,gam){ temp.p = p.fn(p0,gam); return((as.numeric(gam>0)-temp.p)^(-1)) }
+get_gamma_bounds <- function(p0) {
+  stopifnot(is.numeric(p0), length(p0) == 1L, is.finite(p0), p0 > 0, p0 < 1)
+  out <- get_gamma_bounds_cpp(p0)
+  # ensure names for clarity
+  if (length(out) == 2L && is.null(names(out))) names(out) <- c("L","U")
+  out
+}
 #
 CheckLossFn = function(p0,diff){diff*p0 - diff*as.numeric(diff<0)}
 #
@@ -145,15 +152,20 @@ make_df_mat = function(df,dim.df,n){
 }
 #
 check_mod = function(model){
-  if(dlm::is.dlm(model)){
-    model = dlmMod(model)
+  if(!is.exdqlm(model)){
+    stop("Model must be an 'exdqlm' object. To create an 'exdqlm', use functions as.exdqlm(), seasMod(), or polytrendMod().")
   }
+  
+  ## check all dimensions
+  # m0
   if(!is.vector(model$m0)){
-    if(ncol(model$m0) != 1){
-      stop("m0 must be a vector or a matrix with 1 column")
-      }
+    if(nrow(model$m0) != 1 & ncol(model$m0) != 1){
+      stop("m0 must be a vector, or a matrix with 1 column or 1 row")
     }
-  p = length(model$m0)
+  }
+  model$m0 = as.matrix(c(model$m0))
+  p = nrow(model$m0)
+  # C0
   model$C0 = as.matrix(model$C0)
   if(p != dim(model$C0)[1] & p != dim(model$C0)[2]){
     stop("C0 must be a square matrix matching the dimension of m0")
@@ -161,15 +173,22 @@ check_mod = function(model){
   if(!all.equal(model$C0, t(model$C0)) | !all(eigen(model$C0)$values >= 0)){
     stop("C0 must be a covariance matrix")
   }
+  # FF
   if(!is.vector(model$FF)){
-    if(nrow(model$FF) != p){
+    if(nrow(model$FF) != p & ncol(model$FF) != p){
       stop("FF must be a vector of length matching the dimension of m0, or a matrix with number of rows matching the dimension of m0")
+    }
+    if(ncol(model$FF) == p){
+      model$FF = t(model$FF)
     }
   }else{
     if(length(model$FF) != p){
       stop("FF must be a vector of length matching the dimension of m0, or a matrix with number of rows matching the dimension of m0")
+    }else{
+      model$FF = matrix(model$FF,p,1)
     }
   }
+  # GG
   if(is.null(dim(model$GG)[3])){
     model$GG = as.matrix(model$GG)
   }else{
@@ -182,8 +201,7 @@ check_mod = function(model){
   if(p != dim(model$GG)[1] & p != dim(model$GG)[2]){
     stop("GG must be a square matrix matching the dimension of m0, or an array with first two dimensions matching the dimension of m0")
   }
-  model$m0 = as.matrix(model$m0)
-  model$FF = as.matrix(model$FF)
+  
   return(model)
 }
 #
@@ -217,8 +235,8 @@ check_ts = function(dat){
   }
   return(invisible(dat))
 }
-#
-is.exdqlm = function(m){ return(inherits(m,"exdqlm")) }
+
+
 
 
 

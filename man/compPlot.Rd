@@ -5,7 +5,6 @@
 \title{Plot a component of an exDQLM}
 \usage{
 compPlot(
-  y,
   m1,
   index,
   add = FALSE,
@@ -15,41 +14,39 @@ compPlot(
 )
 }
 \arguments{
-\item{y}{A univariate time-series.}
-
-\item{m1}{An object of class "`exdqlm`".}
+\item{m1}{An object of class "\code{exdqlmMCMC}" or "\code{exdqlmISVB}".}
 
 \item{index}{Index of the component or element of the state vector to be plotted.}
 
-\item{add}{If `TRUE`, the dynamic component will be added to existing plot.}
+\item{add}{If \code{TRUE}, the dynamic component will be added to existing plot.}
 
-\item{col}{Color of dynamic component to be plotted. Default is `purple`.}
+\item{col}{Color of dynamic component to be plotted. Default is \code{purple}.}
 
-\item{just.theta}{If `TRUE`, the function plots the dynamic distribution of the `index` element of the state vector. If `just.theta=TRUE`, `index` must have length 1.}
+\item{just.theta}{If \code{TRUE}, the function plots the dynamic distribution of the \code{index} element of the state vector. If \code{just.theta=TRUE}, \code{index} must have length 1.}
 
 \item{cr.percent}{Percentage used in the calculation of the credible intervals.}
 }
 \value{
 A list of the following is returned:
- \itemize{
-  \item `map.comp` - MAP estimate of the dynamic component (or element of the state vector).
-  \item `lb.comp` - Lower bound of the 95% CrIs of the dynamic component (or element of the state vector).
-  \item `ub.comp` - Upper bound of the 95% CrIs of the dynamic component (or element of the state vector).
+\itemize{
+\item \code{map.comp} - MAP estimate of the dynamic component (or element of the state vector).
+\item \code{lb.comp} - Lower bound of the 95\% CrIs of the dynamic component (or element of the state vector).
+\item \code{ub.comp} - Upper bound of the 95\% CrIs of the dynamic component (or element of the state vector).
 }
 }
 \description{
-The function plots the dynamic MAP estimates and 95% credible intervals (CrIs) of a specified component of an exDQLM. Alternatively, if `just.theta=TRUE` the MAP estimates and 95% credible intervals (CrIs) of a single element of the dynamic state vector are plotted.
+The function plots the dynamic MAP estimates and 95\% credible intervals (CrIs) of a specified component of an exDQLM. Alternatively, if \code{just.theta=TRUE} the MAP estimates and 95\% credible intervals (CrIs) of a single element of the dynamic state vector are plotted.
 }
 \examples{
 \donttest{
 y = scIVTmag[1:365]
 trend.comp = polytrendMod(2,rep(0,2),10*diag(2))
 seas.comp = seasMod(365,c(1,2,4),C0=10*diag(6))
-model = combineMods(trend.comp,seas.comp)
+model = trend.comp + seas.comp
 M0 = exdqlmISVB(y,p0=0.85,model,df=c(0.98,1),dim.df = c(2,6),
                    gam.init=-3.5,sig.init=15,tol=0.05)
 # plot first harmonic component
-compPlot(y,M0,index=c(3,4),col="blue")
+compPlot(M0,index=c(3,4),col="blue")
 }
 
 }

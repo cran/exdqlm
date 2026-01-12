@@ -7,7 +7,7 @@
 #' @param m0 Prior mean of the state vector.
 #' @param C0 Prior covariance of the state vector.
 #'
-#' @return A list of the following:
+#' @return A object of class "\code{exdqlm}" containing the following:
 #' \itemize{
 #'   \item FF - Observational vector.
 #'   \item GG - Evolution matrix.
@@ -32,11 +32,11 @@ seasMod = function(p, h, m0, C0){
       G[i,2,2] =  cos(w[i])
     }
     for(i in 1:(nh-1)){
-      if(i ==1 ){ GG = G[1,,]}
+      if(i == 1){ GG = G[1,,]}
       else{GG = magic::adiag(GG,G[i,,])}
     }
     GG = magic::adiag(GG,-1)
-    FF = vector("numeric", 2*nh - 1)
+    FF = as.matrix(numeric(2*nh - 1))
     FF[1:(2*nh-1) %% 2 == 1] = 1
   }else{
     G = array(0,c(nh,2,2))
@@ -47,16 +47,16 @@ seasMod = function(p, h, m0, C0){
       G[i,2,2] =  cos(w[i])
     }
     for(i in 1:nh){
-      if(i ==1 ){ GG = G[1,,]}
+      if(i == 1){ GG = G[1,,]}
       else{GG = magic::adiag(GG,G[i,,])}
     }
-    FF = vector("numeric", 2*nh)
-    FF[1:(2*nh) %% 2 == 1] = 1
+    FF = as.matrix(numeric(2*nh))
+    FF[1:(2*nh) %% 2 == 1,] = 1
   }
   if(methods::hasArg(m0)){
     if(length(m0) != nrow(GG)){stop("length of m0 does not match specified seasonal component(s)")}
   }else{
-    m0 = rep(0,nrow(GG))
+    m0 = as.matrix(numeric(nrow(GG)))
   }
   if(methods::hasArg(C0)){
     C0 = as.matrix(C0)
@@ -64,5 +64,8 @@ seasMod = function(p, h, m0, C0){
   }else{
     C0 = 1e3*diag(nrow(GG))
   }
-  return(list(FF = FF, GG = GG, m0 = m0, C0 = C0))
+  mod = list(FF = FF, GG = GG, m0 = m0, C0 = C0)
+  
+  class(mod) <- "exdqlm"
+  return(mod)
 }

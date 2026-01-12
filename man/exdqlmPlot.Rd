@@ -4,29 +4,27 @@
 \alias{exdqlmPlot}
 \title{Plot exDQLM}
 \usage{
-exdqlmPlot(y, m1, add = FALSE, col = "purple", cr.percent = 0.95)
+exdqlmPlot(m1, add = FALSE, col = "purple", cr.percent = 0.95)
 }
 \arguments{
-\item{y}{A univariate time-series.}
+\item{m1}{An object of class "\code{exdqlmMCMC}" or "\code{exdqlmISVB}".}
 
-\item{m1}{An object of class "`exdqlm`".}
+\item{add}{If \code{TRUE}, the dynamic quantile will be added to existing plot.}
 
-\item{add}{If `TRUE`, the dynamic quantile will be added to existing plot.}
-
-\item{col}{Color of dynamic quantile to be plotted. Default is `purple`.}
+\item{col}{Color of dynamic quantile to be plotted. Default is \code{purple}.}
 
 \item{cr.percent}{Percentage used in the calculation of the credible intervals.}
 }
 \value{
 A list of the following is returned:
- \itemize{
-  \item `map.quant` - MAP estimate of the dynamic quantile.
-  \item `lb.quant` - Lower bound of the 95% CrIs of the dynamic quantile.
-  \item `ub.quant` - Upper bound of the 95% CrIs of the dynamic quantile.
+\itemize{
+\item \code{map.quant} - MAP estimate of the dynamic quantile.
+\item \code{lb.quant} - Lower bound of the 95\% CrIs of the dynamic quantile.
+\item \code{ub.quant} - Upper bound of the 95\% CrIs of the dynamic quantile.
 }
 }
 \description{
-The function plots the MAP estimates and 95% credible intervals (CrIs) of the dynamic quantile of an exDQLM.
+The function plots the MAP estimates and 95\% credible intervals (CrIs) of the dynamic quantile of an exDQLM.
 }
 \examples{
 \donttest{
@@ -34,7 +32,7 @@ y = scIVTmag[1:100]
 model = polytrendMod(1,quantile(y,0.85),10)
 M0 = exdqlmISVB(y,p0=0.85,model,df=c(0.98),dim.df = c(1),
                    gam.init=-3.5,sig.init=15)
-exdqlmPlot(y,M0,col="blue")
+exdqlmPlot(M0,col="blue")
 }
 
 }
