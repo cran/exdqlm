@@ -70,7 +70,8 @@ exdqlmMCMC <- function(y,p0,model,df,dim.df,fix.gamma=FALSE,gam.init=NA,fix.sigm
   I = n.mcmc + n.burn
 
   ### Define L and U
-  L = L.fn(p0); U = U.fn(p0)
+  bounds = .gamma_bounds(p0)
+  L = bounds["L"]; U = bounds["U"]
   if(!is.na(gam.init)){
     if(gam.init < L | gam.init > U){
       stop(sprintf("gam.init must be between %s and %s for %s quantile",round(L,3),round(U,3),p0))

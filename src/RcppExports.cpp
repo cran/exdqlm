@@ -2,6 +2,7 @@
 // Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #include <RcppArmadillo.h>
+#include <RcppEigen.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
@@ -87,6 +88,306 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// logDetCholesky
+double logDetCholesky(const Eigen::MatrixXd& matrix);
+RcppExport SEXP _exdqlm_logDetCholesky(SEXP matrixSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type matrix(matrixSEXP);
+    rcpp_result_gen = Rcpp::wrap(logDetCholesky(matrix));
+    return rcpp_result_gen;
+END_RCPP
+}
+// compute_cholesky
+Rcpp::List compute_cholesky(const arma::mat& q, bool compute_sqrt_inverse);
+RcppExport SEXP _exdqlm_compute_cholesky(SEXP qSEXP, SEXP compute_sqrt_inverseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< bool >::type compute_sqrt_inverse(compute_sqrt_inverseSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_cholesky(q, compute_sqrt_inverse));
+    return rcpp_result_gen;
+END_RCPP
+}
+// H_t_k_r
+arma::mat H_t_k_r(const arma::cube& GG, int t, int k, int r);
+RcppExport SEXP _exdqlm_H_t_k_r(SEXP GGSEXP, SEXP tSEXP, SEXP kSEXP, SEXP rSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::cube& >::type GG(GGSEXP);
+    Rcpp::traits::input_parameter< int >::type t(tSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< int >::type r(rSEXP);
+    rcpp_result_gen = Rcpp::wrap(H_t_k_r(GG, t, k, r));
+    return rcpp_result_gen;
+END_RCPP
+}
+// update_theta_cpp
+List update_theta_cpp(const arma::cube& GG, const arma::vec& m0, const arma::mat& C0, const arma::mat& ex_f, const arma::cube& ex_q, const arma::cube& FF, const arma::mat& y, const arma::mat& ex_df_mat, const arma::mat& ex_df_mat_k, const arma::mat& Ones, int p, int J, int ppx, int TT, int k, int dM);
+RcppExport SEXP _exdqlm_update_theta_cpp(SEXP GGSEXP, SEXP m0SEXP, SEXP C0SEXP, SEXP ex_fSEXP, SEXP ex_qSEXP, SEXP FFSEXP, SEXP ySEXP, SEXP ex_df_matSEXP, SEXP ex_df_mat_kSEXP, SEXP OnesSEXP, SEXP pSEXP, SEXP JSEXP, SEXP ppxSEXP, SEXP TTSEXP, SEXP kSEXP, SEXP dMSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::cube& >::type GG(GGSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type m0(m0SEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type C0(C0SEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type ex_f(ex_fSEXP);
+    Rcpp::traits::input_parameter< const arma::cube& >::type ex_q(ex_qSEXP);
+    Rcpp::traits::input_parameter< const arma::cube& >::type FF(FFSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type ex_df_mat(ex_df_matSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type ex_df_mat_k(ex_df_mat_kSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Ones(OnesSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< int >::type ppx(ppxSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< int >::type dM(dMSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_theta_cpp(GG, m0, C0, ex_f, ex_q, FF, y, ex_df_mat, ex_df_mat_k, Ones, p, J, ppx, TT, k, dM));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sample_truncnorm
+Rcpp::NumericMatrix sample_truncnorm(int n_samp, int TT, Rcpp::NumericVector sts_mu, Rcpp::NumericVector sts_sig2);
+RcppExport SEXP _exdqlm_sample_truncnorm(SEXP n_sampSEXP, SEXP TTSEXP, SEXP sts_muSEXP, SEXP sts_sig2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type sts_mu(sts_muSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type sts_sig2(sts_sig2SEXP);
+    rcpp_result_gen = Rcpp::wrap(sample_truncnorm(n_samp, TT, sts_mu, sts_sig2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sample_gig_devroye_vector
+Rcpp::NumericMatrix sample_gig_devroye_vector(int n_samples, double p, double a, Rcpp::NumericVector b_vec);
+RcppExport SEXP _exdqlm_sample_gig_devroye_vector(SEXP n_samplesSEXP, SEXP pSEXP, SEXP aSEXP, SEXP b_vecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samples(n_samplesSEXP);
+    Rcpp::traits::input_parameter< double >::type p(pSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type b_vec(b_vecSEXP);
+    rcpp_result_gen = Rcpp::wrap(sample_gig_devroye_vector(n_samples, p, a, b_vec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sample_multivariate_normal
+arma::cube sample_multivariate_normal(int n_samp, int TT, arma::cube sC, arma::mat sm, int p, int J);
+RcppExport SEXP _exdqlm_sample_multivariate_normal(SEXP n_sampSEXP, SEXP TTSEXP, SEXP sCSEXP, SEXP smSEXP, SEXP pSEXP, SEXP JSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type sC(sCSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sm(smSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    rcpp_result_gen = Rcpp::wrap(sample_multivariate_normal(n_samp, TT, sC, sm, p, J));
+    return rcpp_result_gen;
+END_RCPP
+}
+// samp_post_pred
+arma::cube samp_post_pred(int n_samp, int TT, int p, int J, arma::cube samp_theta, arma::cube FF, arma::mat samp_sigma, double p0, arma::mat samp_gamma, arma::cube samp_sts);
+RcppExport SEXP _exdqlm_samp_post_pred(SEXP n_sampSEXP, SEXP TTSEXP, SEXP pSEXP, SEXP JSEXP, SEXP samp_thetaSEXP, SEXP FFSEXP, SEXP samp_sigmaSEXP, SEXP p0SEXP, SEXP samp_gammaSEXP, SEXP samp_stsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type samp_theta(samp_thetaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type FF(FFSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_sigma(samp_sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type p0(p0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_gamma(samp_gammaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type samp_sts(samp_stsSEXP);
+    rcpp_result_gen = Rcpp::wrap(samp_post_pred(n_samp, TT, p, J, samp_theta, FF, samp_sigma, p0, samp_gamma, samp_sts));
+    return rcpp_result_gen;
+END_RCPP
+}
+// generate_samples
+Rcpp::List generate_samples(int n_samp, int TT, int p, int J, arma::cube FF, arma::cube sC, arma::mat sm, arma::mat samp_sigma, double p0, arma::mat samp_gamma, arma::cube samp_sts);
+RcppExport SEXP _exdqlm_generate_samples(SEXP n_sampSEXP, SEXP TTSEXP, SEXP pSEXP, SEXP JSEXP, SEXP FFSEXP, SEXP sCSEXP, SEXP smSEXP, SEXP samp_sigmaSEXP, SEXP p0SEXP, SEXP samp_gammaSEXP, SEXP samp_stsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type FF(FFSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type sC(sCSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sm(smSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_sigma(samp_sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type p0(p0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_gamma(samp_gammaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type samp_sts(samp_stsSEXP);
+    rcpp_result_gen = Rcpp::wrap(generate_samples(n_samp, TT, p, J, FF, sC, sm, samp_sigma, p0, samp_gamma, samp_sts));
+    return rcpp_result_gen;
+END_RCPP
+}
+// samp_post_pred_synth
+Rcpp::List samp_post_pred_synth(int n_samp, int k_forecast, int p_ens, int J, arma::cube samp_theta_ens, arma::cube FF_ens, arma::mat samp_sigma, double p0, arma::mat samp_gamma, Rcpp::List samp_sts_ens);
+RcppExport SEXP _exdqlm_samp_post_pred_synth(SEXP n_sampSEXP, SEXP k_forecastSEXP, SEXP p_ensSEXP, SEXP JSEXP, SEXP samp_theta_ensSEXP, SEXP FF_ensSEXP, SEXP samp_sigmaSEXP, SEXP p0SEXP, SEXP samp_gammaSEXP, SEXP samp_sts_ensSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type k_forecast(k_forecastSEXP);
+    Rcpp::traits::input_parameter< int >::type p_ens(p_ensSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type samp_theta_ens(samp_theta_ensSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type FF_ens(FF_ensSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_sigma(samp_sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type p0(p0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_gamma(samp_gammaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type samp_sts_ens(samp_sts_ensSEXP);
+    rcpp_result_gen = Rcpp::wrap(samp_post_pred_synth(n_samp, k_forecast, p_ens, J, samp_theta_ens, FF_ens, samp_sigma, p0, samp_gamma, samp_sts_ens));
+    return rcpp_result_gen;
+END_RCPP
+}
+// generate_synth_samples
+Rcpp::List generate_synth_samples(int n_samp, int TT, int p, int J, arma::cube FF, arma::cube sC, arma::mat sm, arma::mat samp_sigma, double p0, arma::mat samp_gamma, arma::cube samp_sts, Rcpp::List samp_sts_ens, int k_forecast, int p_ens, arma::cube FF_ens, arma::cube sC_ens, arma::mat sm_ens);
+RcppExport SEXP _exdqlm_generate_synth_samples(SEXP n_sampSEXP, SEXP TTSEXP, SEXP pSEXP, SEXP JSEXP, SEXP FFSEXP, SEXP sCSEXP, SEXP smSEXP, SEXP samp_sigmaSEXP, SEXP p0SEXP, SEXP samp_gammaSEXP, SEXP samp_stsSEXP, SEXP samp_sts_ensSEXP, SEXP k_forecastSEXP, SEXP p_ensSEXP, SEXP FF_ensSEXP, SEXP sC_ensSEXP, SEXP sm_ensSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type FF(FFSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type sC(sCSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sm(smSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_sigma(samp_sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type p0(p0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_gamma(samp_gammaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type samp_sts(samp_stsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type samp_sts_ens(samp_sts_ensSEXP);
+    Rcpp::traits::input_parameter< int >::type k_forecast(k_forecastSEXP);
+    Rcpp::traits::input_parameter< int >::type p_ens(p_ensSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type FF_ens(FF_ensSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type sC_ens(sC_ensSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sm_ens(sm_ensSEXP);
+    rcpp_result_gen = Rcpp::wrap(generate_synth_samples(n_samp, TT, p, J, FF, sC, sm, samp_sigma, p0, samp_gamma, samp_sts, samp_sts_ens, k_forecast, p_ens, FF_ens, sC_ens, sm_ens));
+    return rcpp_result_gen;
+END_RCPP
+}
+// generate_synth_samples_retro_part
+Rcpp::List generate_synth_samples_retro_part(int n_samp, int TT, int p, int J, arma::cube sC, arma::mat sm);
+RcppExport SEXP _exdqlm_generate_synth_samples_retro_part(SEXP n_sampSEXP, SEXP TTSEXP, SEXP pSEXP, SEXP JSEXP, SEXP sCSEXP, SEXP smSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type sC(sCSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sm(smSEXP);
+    rcpp_result_gen = Rcpp::wrap(generate_synth_samples_retro_part(n_samp, TT, p, J, sC, sm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// generate_synth_samples_forecast_part
+Rcpp::List generate_synth_samples_forecast_part(int n_samp, int J, int k_forecast, int p_ens, arma::cube sC_ens, arma::mat sm_ens);
+RcppExport SEXP _exdqlm_generate_synth_samples_forecast_part(SEXP n_sampSEXP, SEXP JSEXP, SEXP k_forecastSEXP, SEXP p_ensSEXP, SEXP sC_ensSEXP, SEXP sm_ensSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< int >::type k_forecast(k_forecastSEXP);
+    Rcpp::traits::input_parameter< int >::type p_ens(p_ensSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type sC_ens(sC_ensSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sm_ens(sm_ensSEXP);
+    rcpp_result_gen = Rcpp::wrap(generate_synth_samples_forecast_part(n_samp, J, k_forecast, p_ens, sC_ens, sm_ens));
+    return rcpp_result_gen;
+END_RCPP
+}
+// samp_post_pred_extended
+arma::cube samp_post_pred_extended(int n_samp, int TT, int p, int J, arma::cube samp_theta, arma::cube FF, arma::mat samp_sigma, double p0, arma::mat samp_gamma, arma::cube samp_sts, arma::cube samp_uts);
+RcppExport SEXP _exdqlm_samp_post_pred_extended(SEXP n_sampSEXP, SEXP TTSEXP, SEXP pSEXP, SEXP JSEXP, SEXP samp_thetaSEXP, SEXP FFSEXP, SEXP samp_sigmaSEXP, SEXP p0SEXP, SEXP samp_gammaSEXP, SEXP samp_stsSEXP, SEXP samp_utsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type samp_theta(samp_thetaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type FF(FFSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_sigma(samp_sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type p0(p0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_gamma(samp_gammaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type samp_sts(samp_stsSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type samp_uts(samp_utsSEXP);
+    rcpp_result_gen = Rcpp::wrap(samp_post_pred_extended(n_samp, TT, p, J, samp_theta, FF, samp_sigma, p0, samp_gamma, samp_sts, samp_uts));
+    return rcpp_result_gen;
+END_RCPP
+}
+// generate_samples_ext
+Rcpp::List generate_samples_ext(int n_samp, int TT, int p, int J, arma::cube FF, arma::cube sC, arma::mat sm, arma::mat samp_sigma, double p0, arma::mat samp_gamma, arma::cube samp_sts, arma::cube samp_uts);
+RcppExport SEXP _exdqlm_generate_samples_ext(SEXP n_sampSEXP, SEXP TTSEXP, SEXP pSEXP, SEXP JSEXP, SEXP FFSEXP, SEXP sCSEXP, SEXP smSEXP, SEXP samp_sigmaSEXP, SEXP p0SEXP, SEXP samp_gammaSEXP, SEXP samp_stsSEXP, SEXP samp_utsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type FF(FFSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type sC(sCSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sm(smSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_sigma(samp_sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type p0(p0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type samp_gamma(samp_gammaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type samp_sts(samp_stsSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type samp_uts(samp_utsSEXP);
+    rcpp_result_gen = Rcpp::wrap(generate_samples_ext(n_samp, TT, p, J, FF, sC, sm, samp_sigma, p0, samp_gamma, samp_sts, samp_uts));
+    return rcpp_result_gen;
+END_RCPP
+}
+// DISC_sample_multivariate_normal
+arma::cube DISC_sample_multivariate_normal(int n_samp, int TT, arma::cube sC, arma::mat sm, int n);
+RcppExport SEXP _exdqlm_DISC_sample_multivariate_normal(SEXP n_sampSEXP, SEXP TTSEXP, SEXP sCSEXP, SEXP smSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type sC(sCSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sm(smSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(DISC_sample_multivariate_normal(n_samp, TT, sC, sm, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// DISC_generate_synth_samples_retro_part
+Rcpp::List DISC_generate_synth_samples_retro_part(int n_samp, int TT, int n, arma::cube sC, arma::mat sm);
+RcppExport SEXP _exdqlm_DISC_generate_synth_samples_retro_part(SEXP n_sampSEXP, SEXP TTSEXP, SEXP nSEXP, SEXP sCSEXP, SEXP smSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_samp(n_sampSEXP);
+    Rcpp::traits::input_parameter< int >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type sC(sCSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sm(smSEXP);
+    rcpp_result_gen = Rcpp::wrap(DISC_generate_synth_samples_retro_part(n_samp, TT, n, sC, sm));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_exdqlm_get_gamma_bounds", (DL_FUNC) &_exdqlm_get_gamma_bounds, 1},
@@ -94,6 +395,23 @@ static const R_CallMethodDef CallEntries[] = {
     {"_exdqlm_pexal", (DL_FUNC) &_exdqlm_pexal, 7},
     {"_exdqlm_qexal", (DL_FUNC) &_exdqlm_qexal, 7},
     {"_exdqlm_rexal", (DL_FUNC) &_exdqlm_rexal, 5},
+    {"_exdqlm_logDetCholesky", (DL_FUNC) &_exdqlm_logDetCholesky, 1},
+    {"_exdqlm_compute_cholesky", (DL_FUNC) &_exdqlm_compute_cholesky, 2},
+    {"_exdqlm_H_t_k_r", (DL_FUNC) &_exdqlm_H_t_k_r, 4},
+    {"_exdqlm_update_theta_cpp", (DL_FUNC) &_exdqlm_update_theta_cpp, 16},
+    {"_exdqlm_sample_truncnorm", (DL_FUNC) &_exdqlm_sample_truncnorm, 4},
+    {"_exdqlm_sample_gig_devroye_vector", (DL_FUNC) &_exdqlm_sample_gig_devroye_vector, 4},
+    {"_exdqlm_sample_multivariate_normal", (DL_FUNC) &_exdqlm_sample_multivariate_normal, 6},
+    {"_exdqlm_samp_post_pred", (DL_FUNC) &_exdqlm_samp_post_pred, 10},
+    {"_exdqlm_generate_samples", (DL_FUNC) &_exdqlm_generate_samples, 11},
+    {"_exdqlm_samp_post_pred_synth", (DL_FUNC) &_exdqlm_samp_post_pred_synth, 10},
+    {"_exdqlm_generate_synth_samples", (DL_FUNC) &_exdqlm_generate_synth_samples, 17},
+    {"_exdqlm_generate_synth_samples_retro_part", (DL_FUNC) &_exdqlm_generate_synth_samples_retro_part, 6},
+    {"_exdqlm_generate_synth_samples_forecast_part", (DL_FUNC) &_exdqlm_generate_synth_samples_forecast_part, 6},
+    {"_exdqlm_samp_post_pred_extended", (DL_FUNC) &_exdqlm_samp_post_pred_extended, 11},
+    {"_exdqlm_generate_samples_ext", (DL_FUNC) &_exdqlm_generate_samples_ext, 12},
+    {"_exdqlm_DISC_sample_multivariate_normal", (DL_FUNC) &_exdqlm_DISC_sample_multivariate_normal, 5},
+    {"_exdqlm_DISC_generate_synth_samples_retro_part", (DL_FUNC) &_exdqlm_DISC_generate_synth_samples_retro_part, 5},
     {NULL, NULL, 0}
 };
 

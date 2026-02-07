@@ -1,6 +1,6 @@
 Package: exdqlm
 Title: Extended Dynamic Quantile Linear Models
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: 
     c(person(given = "Raquel", family = "Barata",
              role = c("aut", "cre"),
@@ -13,19 +13,25 @@ Author: Raquel Barata [aut, cre],
   Bruno Sanso [ths],
   Antonio Aguirre [aut]
 Maintainer: Raquel Barata <raquel.a.barata@gmail.com>
-Description: Routines for Bayesian estimation and analysis of dynamic quantile linear models utilizing the extended asymmetric Laplace error distribution, also known as extended dynamic quantile linear models (exDQLM) described in Barata et al (2020) <doi:10.1214/21-AOAS1497>. 
+Description: Routines for Bayesian estimation and analysis of dynamic quantile
+    linear models utilizing the extended asymmetric Laplace error distribution,
+    also known as extended dynamic quantile linear models (exDQLM) described in
+    Barata et al (2020) <doi:10.1214/21-AOAS1497>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3
 Depends: R (>= 2.10)
 Imports: stats, methods, graphics, coda, tictoc, magic, crch,
-        truncnorm, HyperbolicDist, GeneralizedHyperbolic, FNN,
-        LaplacesDemon, grDevices, Rcpp, matrixStats
-Packaged: 2026-01-12 18:44:48 UTC; raquel
-Repository: CRAN
-Date/Publication: 2026-01-12 19:00:08 UTC
+        truncnorm, GeneralizedHyperbolic, FNN, LaplacesDemon,
+        grDevices, Rcpp, matrixStats
 Suggests: rmarkdown, testthat (>= 3.0.0), ggplot2, pkgload
 Config/testthat/edition: 3
-LinkingTo: BH, Rcpp, RcppArmadillo
+LinkingTo: BH, Rcpp, RcppArmadillo, RcppEigen
+SystemRequirements: C++17; OpenMP (optional)
+URL: https://github.com/AntonioAPDL/exdqlm
+BugReports: https://github.com/AntonioAPDL/exdqlm/issues
 NeedsCompilation: yes
+Packaged: 2026-02-07 17:19:30 UTC; raquel
+Repository: CRAN
+Date/Publication: 2026-02-07 17:40:02 UTC

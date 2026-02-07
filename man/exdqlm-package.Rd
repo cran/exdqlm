@@ -6,7 +6,24 @@
 \alias{exdqlm-package}
 \title{exdqlm: Extended Dynamic Quantile Linear Models}
 \description{
-Routines for Bayesian estimation and analysis of dynamic quantile linear models utilizing the extended asymmetric Laplace error distribution, also known as extended dynamic quantile linear models (exDQLM) described in Barata et al (2020) \doi{10.1214/21-AOAS1497}.
+Routines for Bayesian estimation and analysis of dynamic quantile linear models
+using the extended asymmetric Laplace error distribution (exDQLM).
+}
+\section{Runtime options}{
+
+\itemize{
+\item \code{options(exdqlm.use_cpp_kf = TRUE|FALSE)} – C++ Kalman bridge (optional; default TRUE).
+\item \code{options(exdqlm.use_cpp_samplers = TRUE|FALSE)} – C++ samplers (optional; default FALSE).
+}
+}
+
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/AntonioAPDL/exdqlm}
+  \item Report bugs at \url{https://github.com/AntonioAPDL/exdqlm/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Raquel Barata \email{raquel.a.barata@gmail.com}
@@ -23,4 +40,4 @@ Other contributors:
 }
 
 }
-\keyword{internal}
+\keyword{package}

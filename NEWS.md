@@ -1,7 +1,28 @@
+# exdqlm 0.3.0
+
+- **C++ bridge and optional samplers**
+  - Optional C++ Kalman filter/smoother bridge and sampling kernels (theta, s_t, u_t).
+  - Runtime toggles via `options(exdqlm.use_cpp_kf = TRUE)` and `options(exdqlm.use_cpp_samplers = TRUE)`.
+  - Defaults preserve the R implementation for backward compatibility.
+
+- **ELBO diagnostics and stopping**
+  - New `diagnostics$elbo` recorded per ISVB iteration.
+  - Optional ELBO-based stopping via `options(exdqlm.compute_elbo = TRUE)` and `options(exdqlm.tol_elbo = 1e-4)`.
+
+- **Numerical robustness**
+  - Stabilized log-determinant computations and truncated-normal entropy updates.
+  - Guard rails for edge cases in intermediate calculations.
+
+- **Build & hygiene**
+  - OpenMP usage is optional and gated by compiler support.
+  - Makevars link against R BLAS/LAPACK; internal headers centralized.
+
+- **Docs & tests**
+  - Runtime options documented; parity checks added for R vs C++ paths.
 
 # exdqlm 0.2.0
 
-- New AL/GAL helper functions with C++ backends:
+- New AL/exAL helper functions with C++ backends:
   - `dexal()`, `pexal()`, `qexal()`, `rexal()` for density, cdf, quantile and random generation.
   - `get_gamma_bounds()` to compute valid `(L, U)` bounds for `gamma` given `p0`.
   - Implementation details:
@@ -15,6 +36,7 @@
   - function exdqlmISVB() and (inherently) transfn_exdqlmISVB() now return objects of class 'exdqlmISVB'
   - function exdqlmMCMC() now returns objects of class 'exdqlmMCMC'
   - function exdqlmDiagnostics() now returns objects of class 'exdqlmDiagnostic'
+  - function exdqlmForecast() now returns objects of class 'exdqlmForecast'
   - returns from exdqlmMCMC(), exdqlmISVB(), and transfn_exdqlmISVB() now include data (y)
 - Input changes
   - y removed from the inputs of exdqlmDiagnostics(), exdqlmForecast(), compPlot(), and exdqlmPlot()

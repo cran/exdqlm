@@ -6,12 +6,47 @@ p.fn<-function(p0,gam){ (p0-as.numeric(gam<0))/exp(log_g(gam))+as.numeric(gam<0)
 A.fn<-function(p0,gam){ temp.p = p.fn(p0,gam); return((1-2*temp.p)/(temp.p*(1-temp.p))) }
 B.fn<-function(p0,gam){ temp.p = p.fn(p0,gam); return((2)/(temp.p*(1-temp.p))) }
 C.fn<-function(p0,gam){ temp.p = p.fn(p0,gam); return((as.numeric(gam>0)-temp.p)^(-1)) }
-get_gamma_bounds <- function(p0) {
+# Internal helper: validate bounds and fall back to R reference if needed.
+.gamma_bounds_ok_basic <- function(L, U) {
+  if (!is.numeric(L) || !is.numeric(U) || length(L) != 1L || length(U) != 1L) return(FALSE)
+  if (!is.finite(L) || !is.finite(U)) return(FALSE)
+  if (L >= U) return(FALSE)
+  # Gamma bounds should always straddle 0 for p0 in (0, 1).
+  if (L > 0 || U < 0) return(FALSE)
+  TRUE
+}
+
+.gamma_bounds_ok_cpp <- function(L, U, p0, tol_log = 1e-4) {
+  if (!.gamma_bounds_ok_basic(L, U)) return(FALSE)
+  log_target_L <- base::log1p(-p0)
+  log_target_U <- base::log(p0)
+  if (!is.finite(log_target_L) || !is.finite(log_target_U)) return(FALSE)
+
+  # Validate against the defining equations on the log scale:
+  #   g_gamma(L) = 1 - p0,  g_gamma(U) = p0
+  logL <- log_g(L)
+  logU <- log_g(U)
+  if (!is.finite(logL) || !is.finite(logU)) return(FALSE)
+
+  (abs(logL - log_target_L) <= tol_log) && (abs(logU - log_target_U) <= tol_log)
+}
+
+.gamma_bounds_ref <- function(p0) {
+  c(L = L.fn(p0), U = U.fn(p0))
+}
+
+.gamma_bounds <- function(p0) {
   stopifnot(is.numeric(p0), length(p0) == 1L, is.finite(p0), p0 > 0, p0 < 1)
-  out <- get_gamma_bounds_cpp(p0)
-  # ensure names for clarity
-  if (length(out) == 2L && is.null(names(out))) names(out) <- c("L","U")
-  out
+  out_cpp <- try(get_gamma_bounds_cpp(p0), silent = TRUE)
+  if (!inherits(out_cpp, "try-error") && length(out_cpp) == 2L) {
+    if (is.null(names(out_cpp))) names(out_cpp) <- c("L", "U")
+    if (.gamma_bounds_ok_cpp(out_cpp[1], out_cpp[2], p0)) return(out_cpp)
+  }
+  out_ref <- try(.gamma_bounds_ref(p0), silent = TRUE)
+  if (!inherits(out_ref, "try-error") && .gamma_bounds_ok_basic(out_ref[1], out_ref[2])) {
+    return(out_ref)
+  }
+  stop("Unable to compute valid gamma bounds for p0 = ", p0)
 }
 #
 CheckLossFn = function(p0,diff){diff*p0 - diff*as.numeric(diff<0)}
@@ -235,8 +270,6 @@ check_ts = function(dat){
   }
   return(invisible(dat))
 }
-
-
 
 
 

@@ -21,7 +21,9 @@ exdqlmISVB(
   n.samp = 200,
   PriorSigma = NULL,
   PriorGamma = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  debug_shapes = FALSE,
+  debug_every = 5
 )
 }
 \arguments{
@@ -58,6 +60,10 @@ exdqlmISVB(
 \item{PriorGamma}{List of parameters for truncated student-t prior on gamma; center \code{m_gam}, scale \code{s_gam} and degrees of freedom \code{df_gam}. Default is a standard student-t with 1 degree of freedom, truncated to the support of gamma.}
 
 \item{verbose}{Logical value indicating whether progress should be displayed.}
+
+\item{debug_shapes}{Logical; if TRUE, print KF input/output shapes every \code{debug_every} iterations.}
+
+\item{debug_every}{Integer; frequency (in iterations) for shape prints when \code{debug_shapes=TRUE}.}
 }
 \value{
 A object of class "\code{exdqlmISVB}" containing the following:
@@ -98,6 +104,17 @@ Or if \code{dqlm.ind=TRUE}, the object also contains:
 }
 \description{
 The function applies an Importance Sampling Variational Bayes (ISVB) algorithm to estimate the posterior of an exDQLM.
+}
+\details{
+Advanced options (set via \code{options()}):
+\itemize{
+\item \code{exdqlm.use_cpp_kf}: use the C++ Kalman filter bridge (default TRUE).
+\item \code{exdqlm.compute_elbo}: compute ELBO every iteration (default TRUE).
+\item \code{exdqlm.tol_elbo}: ELBO convergence tolerance (default 1e-6).
+\item \code{exdqlm.use_cpp_samplers}: use C++ samplers for s_t, u_t, theta (default FALSE).
+When FALSE, R fallbacks (truncnorm, GH::rgig, SVD sampling) are used.
+\item \code{exdqlm.use_cpp_postpred}: use C++ posterior predictive sampler (default FALSE).
+}
 }
 \examples{
 \donttest{

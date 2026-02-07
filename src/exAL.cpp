@@ -5,6 +5,7 @@
 #include <limits>
 #include <boost/math/tools/roots.hpp>  // Boost root-finding
 #include <boost/math/distributions/normal.hpp>  // Boost for Phi function
+#include <Rmath.h>
 
 using namespace Rcpp;
 using namespace boost::math;
@@ -19,8 +20,15 @@ inline double normal_cdf(double x) {
     return 0.5 * erfc(-x * M_SQRT1_2);
 }
 
+inline double log_g_gamma(double gamma) {
+    double x = std::abs(gamma);
+    // Use R's pnorm in log-space for numerical stability at large |gamma|.
+    double logPhi = R::pnorm5(-x, 0.0, 1.0, 1, 1);
+    return std::log(2.0) + logPhi + 0.5 * x * x;
+}
+
 inline double g_gamma(double gamma) {
-    return 2.0 * normal_cdf(-std::abs(gamma)) * std::exp(gamma * gamma / 2.0);
+    return std::exp(log_g_gamma(gamma));
 }
 
 // Derivative of g_gamma
@@ -30,39 +38,58 @@ inline double g_gamma_prime(double gamma) {
     return 2.0 * std::exp(0.5 * gamma * gamma) * (phi_prime - std::abs(gamma) * phi_val);
 }
 
-// Define a struct for solving g(gamma) - target = 0
-struct GGammaRootFinder {
-    double target;
-    GGammaRootFinder(double t) : target(t) {}
+// Solve log(g_gamma(gamma)) = log(target) on gamma >= 0 using bisection.
+struct LogGGammaRootFinder {
+    double log_target;
+    explicit LogGGammaRootFinder(double lt) : log_target(lt) {}
 
     double operator()(double gamma) const {
-        return g_gamma(gamma) - target;
+        return log_g_gamma(gamma) - log_target;
     }
 };
 
-// Function to find L and U using Boost's bisection method
-double find_gamma_root_boost(double target, double lower, double upper) {
+double find_gamma_root_boost(double target) {
     using namespace boost::math::tools;
-    eps_tolerance<double> tol(1000); // Relative tolerance of 10 bits
+    if (target <= 0.0 || target >= 1.0) {
+        std::ostringstream oss;
+        oss << "Invalid target for gamma root: " << target << ".";
+        Rcpp::stop(oss.str());
+    }
 
-    uintmax_t max_iter = 100000;  // Maximum iterations allowed
-    std::pair<double, double> result = bisect(GGammaRootFinder(target), lower, upper, tol, max_iter);
-    
-    return (result.first + result.second) / 2.0;  // Return the midpoint as the root
+    double log_target = std::log(target);
+    double lower = 0.0;
+    double upper = 1.0;
+
+    // Expand the upper bracket until we cross the root.
+    // log_g_gamma(gamma) is monotone decreasing for gamma >= 0.
+    for (int i = 0; i < 200 && log_g_gamma(upper) > log_target; ++i) {
+        upper *= 2.0;
+    }
+    if (!(log_g_gamma(upper) <= log_target)) {
+        std::ostringstream oss;
+        oss << "Unable to bracket gamma root for target=" << target << ".";
+        Rcpp::stop(oss.str());
+    }
+
+    eps_tolerance<double> tol(1000);
+    uintmax_t max_iter = 100000;
+    std::pair<double, double> result =
+        bisect(LogGGammaRootFinder(log_target), lower, upper, tol, max_iter);
+
+    return (result.first + result.second) / 2.0;
 }
 
 void compute_gamma_bounds(double p0, double &L, double &U) {
-    double lower_bound = -100, upper_bound = 100;  // Expanded search range
     try {
-        L = find_gamma_root_boost(1 - p0, lower_bound, 0);
-        U = find_gamma_root_boost(p0, 0, upper_bound);
+        L = -find_gamma_root_boost(1.0 - p0);
+        U = find_gamma_root_boost(p0);
     } catch (...) {
         std::ostringstream oss;
         oss << "Unable to determine valid gamma bounds for p0 = " << p0 << ".";
         Rcpp::stop(oss.str());
     }
 
-    if (L >= U) {
+    if (L >= U || L > 0.0 || U < 0.0) {
         std::ostringstream oss;
         oss << "Invalid gamma bounds: L=" << L << ", U=" << U << ", p0=" << p0 << ".";
         Rcpp::stop(oss.str());

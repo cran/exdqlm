@@ -21,3 +21,71 @@ rexal_cpp <- function(n, p0 = 0.5, mu = 0.0, sigma = 1.0, gamma = 0.0) {
     .Call(`_exdqlm_rexal`, n, p0, mu, sigma, gamma)
 }
 
+logDetCholesky <- function(matrix) {
+    .Call(`_exdqlm_logDetCholesky`, matrix)
+}
+
+compute_cholesky <- function(q, compute_sqrt_inverse = FALSE) {
+    .Call(`_exdqlm_compute_cholesky`, q, compute_sqrt_inverse)
+}
+
+H_t_k_r <- function(GG, t, k, r) {
+    .Call(`_exdqlm_H_t_k_r`, GG, t, k, r)
+}
+
+update_theta_cpp <- function(GG, m0, C0, ex_f, ex_q, FF, y, ex_df_mat, ex_df_mat_k, Ones, p, J, ppx, TT, k, dM) {
+    .Call(`_exdqlm_update_theta_cpp`, GG, m0, C0, ex_f, ex_q, FF, y, ex_df_mat, ex_df_mat_k, Ones, p, J, ppx, TT, k, dM)
+}
+
+sample_truncnorm <- function(n_samp, TT, sts_mu, sts_sig2) {
+    .Call(`_exdqlm_sample_truncnorm`, n_samp, TT, sts_mu, sts_sig2)
+}
+
+sample_gig_devroye_vector <- function(n_samples, p, a, b_vec) {
+    .Call(`_exdqlm_sample_gig_devroye_vector`, n_samples, p, a, b_vec)
+}
+
+sample_multivariate_normal <- function(n_samp, TT, sC, sm, p, J) {
+    .Call(`_exdqlm_sample_multivariate_normal`, n_samp, TT, sC, sm, p, J)
+}
+
+samp_post_pred <- function(n_samp, TT, p, J, samp_theta, FF, samp_sigma, p0, samp_gamma, samp_sts) {
+    .Call(`_exdqlm_samp_post_pred`, n_samp, TT, p, J, samp_theta, FF, samp_sigma, p0, samp_gamma, samp_sts)
+}
+
+generate_samples <- function(n_samp, TT, p, J, FF, sC, sm, samp_sigma, p0, samp_gamma, samp_sts) {
+    .Call(`_exdqlm_generate_samples`, n_samp, TT, p, J, FF, sC, sm, samp_sigma, p0, samp_gamma, samp_sts)
+}
+
+samp_post_pred_synth <- function(n_samp, k_forecast, p_ens, J, samp_theta_ens, FF_ens, samp_sigma, p0, samp_gamma, samp_sts_ens) {
+    .Call(`_exdqlm_samp_post_pred_synth`, n_samp, k_forecast, p_ens, J, samp_theta_ens, FF_ens, samp_sigma, p0, samp_gamma, samp_sts_ens)
+}
+
+generate_synth_samples <- function(n_samp, TT, p, J, FF, sC, sm, samp_sigma, p0, samp_gamma, samp_sts, samp_sts_ens, k_forecast, p_ens, FF_ens, sC_ens, sm_ens) {
+    .Call(`_exdqlm_generate_synth_samples`, n_samp, TT, p, J, FF, sC, sm, samp_sigma, p0, samp_gamma, samp_sts, samp_sts_ens, k_forecast, p_ens, FF_ens, sC_ens, sm_ens)
+}
+
+generate_synth_samples_retro_part <- function(n_samp, TT, p, J, sC, sm) {
+    .Call(`_exdqlm_generate_synth_samples_retro_part`, n_samp, TT, p, J, sC, sm)
+}
+
+generate_synth_samples_forecast_part <- function(n_samp, J, k_forecast, p_ens, sC_ens, sm_ens) {
+    .Call(`_exdqlm_generate_synth_samples_forecast_part`, n_samp, J, k_forecast, p_ens, sC_ens, sm_ens)
+}
+
+samp_post_pred_extended <- function(n_samp, TT, p, J, samp_theta, FF, samp_sigma, p0, samp_gamma, samp_sts, samp_uts) {
+    .Call(`_exdqlm_samp_post_pred_extended`, n_samp, TT, p, J, samp_theta, FF, samp_sigma, p0, samp_gamma, samp_sts, samp_uts)
+}
+
+generate_samples_ext <- function(n_samp, TT, p, J, FF, sC, sm, samp_sigma, p0, samp_gamma, samp_sts, samp_uts) {
+    .Call(`_exdqlm_generate_samples_ext`, n_samp, TT, p, J, FF, sC, sm, samp_sigma, p0, samp_gamma, samp_sts, samp_uts)
+}
+
+DISC_sample_multivariate_normal <- function(n_samp, TT, sC, sm, n) {
+    .Call(`_exdqlm_DISC_sample_multivariate_normal`, n_samp, TT, sC, sm, n)
+}
+
+DISC_generate_synth_samples_retro_part <- function(n_samp, TT, n, sC, sm) {
+    .Call(`_exdqlm_DISC_generate_synth_samples_retro_part`, n_samp, TT, n, sC, sm)
+}
+
